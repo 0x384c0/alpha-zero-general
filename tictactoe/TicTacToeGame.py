@@ -14,6 +14,10 @@ Date: Jan 5, 2018.
 
 Based on the OthelloGame by Surag Nair.
 """
+
+def debug_print(data):
+    print('\033[95m' + sys._getframe(1).f_code.co_name + '\033[0m' + '\n' + '\033[92m' + str(data) + '\033[0m')
+
 class TicTacToeGame(Game):
     def __init__(self, n=3):
         self.n = n
@@ -21,25 +25,30 @@ class TicTacToeGame(Game):
     def getInitBoard(self):
         # return initial board (numpy board)
         b = Board(self.n)
+        debug_print(np.array(b.pieces))
         return np.array(b.pieces)
 
     def getBoardSize(self):
         # (a,b) tuple
+        debug_print((self.n, self.n))
         return (self.n, self.n)
 
     def getActionSize(self):
         # return number of actions
+        debug_print(self.n*self.n + 1)
         return self.n*self.n + 1
 
     def getNextState(self, board, player, action):
         # if player takes action on board, return next (board,player)
         # action must be a valid move
         if action == self.n*self.n:
+            debug_print((board, -player))
             return (board, -player)
         b = Board(self.n)
         b.pieces = np.copy(board)
         move = (int(action/self.n), action%self.n)
         b.execute_move(move, player)
+        debug_print((b.pieces, -player))
         return (b.pieces, -player)
 
     def getValidMoves(self, board, player):
@@ -50,9 +59,11 @@ class TicTacToeGame(Game):
         legalMoves =  b.get_legal_moves(player)
         if len(legalMoves)==0:
             valids[-1]=1
+            debug_print(np.array(valids))
             return np.array(valids)
         for x, y in legalMoves:
             valids[self.n*x+y]=1
+        debug_print(np.array(valids))
         return np.array(valids)
 
     def getGameEnded(self, board, player):
@@ -62,16 +73,21 @@ class TicTacToeGame(Game):
         b.pieces = np.copy(board)
 
         if b.is_win(player):
+            debug_print("1")
             return 1
         if b.is_win(-player):
+            debug_print("-1")
             return -1
         if b.has_legal_moves():
+            debug_print("0")
             return 0
         # draw has a very little value 
+        debug_print("1e-4")
         return 1e-4
 
     def getCanonicalForm(self, board, player):
         # return state if player==1, else return -state if player==-1
+        debug_print(player*board)
         return player*board
 
     def getSymmetries(self, board, pi):
@@ -88,10 +104,13 @@ class TicTacToeGame(Game):
                     newB = np.fliplr(newB)
                     newPi = np.fliplr(newPi)
                 l += [(newB, list(newPi.ravel()) + [pi[-1]])]
+        
+        debug_print(l)
         return l
 
     def stringRepresentation(self, board):
         # 8x8 numpy array (canonical board)
+        debug_print(board.tostring())
         return board.tostring()
 
 def display(board):
