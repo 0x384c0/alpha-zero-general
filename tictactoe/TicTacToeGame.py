@@ -48,7 +48,7 @@ class TicTacToeGame(Game):
         b.pieces = np.copy(board)
         move = (int(action/self.n), action%self.n)
         b.execute_move(move, player)
-        debug_print((b.pieces, -player))
+        debug_print("action: " + str(action) + " -> " + str((b.pieces, -player)))
         return (b.pieces, -player)
 
     def getValidMoves(self, board, player):
