@@ -18,22 +18,22 @@ WIN_SCORE = (BOARD_SIZE * WIDTH)/HEIGHT - 1
 
 class Board():
 
-	size = (WIDTH * HEIGHT,MAX_BALLS_COUNT_IN_PIT)
-	action_size = BOARD_SIZE# 
+	__size = WIDTH * HEIGHT
+	__action_size = BOARD_SIZE
 
-	_init_state = [INIT_BALLS_COUNT_IN_PIT] * BOARD_SIZE
-	_players_scores = {
+	__init_state = [INIT_BALLS_COUNT_IN_PIT] * BOARD_SIZE
+	__players_scores = {
 		1	:	0,	# player 1
 		-1	:	0	# player -1
 	}
-	_players_tuz = {
+	__players_tuz = {
 		1	:	None,	# player 1
 		-1	:	None	# player -1
 	}
 
 
-	def __init__(self):
-		self.pieces = data_array_to_one_hot(self._init_state,MAX_BALLS_COUNT_IN_PIT)
+	pieces = data_array_to_one_hot(__init_state,MAX_BALLS_COUNT_IN_PIT)
+
 
 	def __getitem__(self, index): 
 		return self.pieces[index]
@@ -45,54 +45,73 @@ class Board():
 		return self.__generate_valid_moves(1).count(1) != 0 and self.__generate_valid_moves(-1).count(1) != 0
 
 	def is_win(self, player):
-		return self._players_scores[player] >= WIN_SCORE
+		return self.__players_scores[player] >= WIN_SCORE
 
 	def execute_move(self, move, player):
 		game_state = one_hot_batch_to_array(self.pieces)
 		balls_in_first_pit = game_state[move]
 		last_pit = move + balls_in_first_pit
+		last_pit_looped = last_pit if last_pit < len(game_state) 	else last_pit - (len(game_state))
+		last_pit_looped -= 1
+
 
 		# игрок берёт все камни из любой своей лунки «дом» и, начиная с этой же лунки, раскладывает их по одному против часовой стрелки в свои и чужие дома
 		game_state[move] = 0
-		for pit in range(move,last_pit): #player 1 TODO: make it for player -1
+		for pit in range(move,last_pit):
+			if pit >= len(game_state):
+				pit = pit - len(game_state)
 			game_state[pit] += 1
 
-		#Если последний коргоол попадает в дом соперника и количество коргоолов в нём становится чётным, то коргоолы из этого дома переходят в казан игрока, совершившего ход.
-		if game_state[last_pit] % 2 == 0: # TODO:add checking is enemys pit 
-			self._players_scores[player] += game_state[last_pit]
-			game_state[last_pit] = 0
+		#Если последний коргоол попадает в дом соперника и 
+		#количество коргоолов в нём становится чётным, то коргоолы из этого дома переходят в казан игрока, совершившего ход.
+		if  (
+			self.__is_pit_dont_belongs_to_player(last_pit_looped,player) and
+			game_state[last_pit_looped] % 2 == 0
+			): # TODO:add checking is enemys pit 
+			self.__players_scores[player] += game_state[last_pit_looped]
+			game_state[last_pit_looped] = 0
 
 		#Если при ходе игрока А последний коргоол попадает в дом игрока Б и в нём после этого оказывается три коргоола, то этот дом объявляется тузом игрока А 
 		# 1) игрок не может завести себе туз в самом последнем (девятом) доме соперника,
 		# 2) игрок не может завести себе туз в доме с таким же порядковым номером, который имеет лунка-туз соперника,
 		# 3) каждый игрок в течение игры может завести себе только один туз.
-		if (game_state[last_pit] == 3 and 
+		if (game_state[last_pit_looped] == 3 and 
 			move < WIDTH - 1 and 
-			last_pit != self._players_tuz[-player] and 
-			self._players_tuz[player] != None):
+			last_pit_looped != self.__players_tuz[-player] and 
+			self.__players_tuz[player] != None):
 			#Эти три коргоола попадают в казан игрока
-			self._players_scores[player] += game_state[last_pit]
-			game_state[last_pit] = 0
-			self._players_tuz[player] = last_pit
+			self.__players_scores[player] += game_state[last_pit_looped]
+			game_state[last_pit_looped] = 0
+			self.__players_tuz[player] = last_pit_looped
 		return data_array_to_one_hot(game_state,MAX_BALLS_COUNT_IN_PIT)
 
 	def __generate_valid_moves(self,player):
-		possible_moves = [0] * self.action_size
+		possible_moves = [0] * self.__action_size
 		game_state = one_hot_batch_to_array(self.pieces)
-		for i in range(0,self.action_size):
+		for i in range(0,self.__action_size):
 			if (
 				player == 1 and (i < BOARD_SIZE/2) or  #playes 1 side
 				player == -1 and (i >= BOARD_SIZE/2)		#playes -1 side
 				): 
 				possible_moves[i] = 1 if game_state[i] > 0 else 0
 
-		if (self._players_tuz[player] is not None):
-			possible_moves[i] = 1 if game_state[self._players_tuz[player]] > 0  else 0
+		if (self.__players_tuz[player] is not None):
+			possible_moves[i] = 1 if game_state[self.__players_tuz[player]] > 0  else 0
 		return possible_moves
 
+	def __is_pit_dont_belongs_to_player(self,pit,player):
+		players_pit = list(range(0, self.__size / 2)) if player == 1 else list(range(self.__size / 2, self.__size))
+		if self.__players_tuz[-player] in players_pit:
+			players_pit.remove(self.__players_tuz[-player])
+		if self.__players_tuz[player] != None:
+			players_pit.add(self.__players_tuz[player])
+		return pit not in players_pit
 
 
 
+
+	def get_player_score(self,player):
+		return self.__players_scores[player]
 
 
 

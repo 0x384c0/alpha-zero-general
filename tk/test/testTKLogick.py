@@ -26,8 +26,18 @@ class TestTKLogick(unittest.TestCase):
 		self.assertEqual(self.board.is_win(-1),		False)
 
 	def test_execute_move(self):
-		self.assertEqual(one_hot_batch_to_array(self.board.execute_move(0,1)),[1, 10, 10, 10, 10, 10, 10, 10, 10, 9, 9, 9, 9, 9, 9, 9, 9, 9])
-
+		self.assertEqual(one_hot_batch_to_array(self.board.execute_move(1,1)),		[9, 1, 10, 10, 10, 10, 10, 10, 10,		0,  9, 9, 9, 9, 9, 9, 9, 9])
+		self.assertEqual(self.board.get_player_score(1),10)
+		self.assertEqual(self.board.get_player_score(-1),0)
+		self.assertEqual(one_hot_batch_to_array(self.board.execute_move(1,-1)),		[9, 1, 10, 10, 10, 10, 10, 10, 10,		10, 9, 9, 9, 9, 9, 9, 9, 9])
+		self.assertEqual(self.board.get_player_score(1),10)
+		self.assertEqual(self.board.get_player_score(-1),0)
+		self.assertEqual(one_hot_batch_to_array(self.board.execute_move(15,1)),		[10, 10, 10, 10, 10, 10, 9, 9, 9,		9, 9, 9, 9, 9, 9, 1, 10, 10])
+		self.assertEqual(self.board.get_player_score(1),10)
+		self.assertEqual(self.board.get_player_score(-1),0)
+		self.assertEqual(one_hot_batch_to_array(self.board.execute_move(15,-1)),	[10, 10, 10, 10, 10, 0,  9, 9, 9,		9, 9, 9, 9, 9, 9, 1, 10, 10])
+		self.assertEqual(self.board.get_player_score(1),10)
+		self.assertEqual(self.board.get_player_score(-1),10)
 
 
 if __name__ == '__main__':
