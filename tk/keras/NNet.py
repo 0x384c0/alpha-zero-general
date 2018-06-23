@@ -19,7 +19,7 @@ args = dotdict({
     'epochs': 10,
     'batch_size': 64,
     'cuda': False,
-    'num_channels': 512,
+    'num_channels': 256,
 })
 
 class NNetWrapper(NeuralNet):

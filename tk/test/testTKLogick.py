@@ -4,7 +4,7 @@ import sys
 sys.path.append('..')
 
 from TKLogic import Board
-from TKLogic import MAX_BALLS_COUNT_IN_PIT
+from TKLogic import MAX_ARRAY_LEN_OF_ENCODED_PIT_STATE
 from utils import *
 
 class TestTKLogic(unittest.TestCase):
@@ -23,7 +23,7 @@ class TestTKLogic(unittest.TestCase):
 		self.board.execute_move(1,1)
 		self.assertEqual(self.board.get_legal_moves(1),		[1, 0, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0])
 
-		self.board.pieces = data_array_to_one_hot([9, 9, 9, 9, 9, 9, 5, 9, 9,		9, 2, 9, 9, 9, 9, 9, 9, 9],MAX_BALLS_COUNT_IN_PIT)
+		self.board.pieces = data_array_to_one_hot([9, 9, 9, 9, 9, 9, 5, 9, 9,		9, 2, 9, 9, 9, 9, 9, 9, 9],MAX_ARRAY_LEN_OF_ENCODED_PIT_STATE)
 		self.board.execute_move(6,1)
 		self.board.execute_move(7,1)
 		self.assertEqual(self.board.get_legal_moves(1), 	[1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0])
@@ -60,7 +60,7 @@ class TestTKLogic(unittest.TestCase):
 		self.assertEqual(self.board.get_player_score(-1),10)
 
 	def test_tuz(self):
-		self.board.pieces = data_array_to_one_hot([9, 9, 9, 9, 9, 9, 9, 10, 10,		9, 9, 9, 9, 9, 9, 9, 1, 2],MAX_BALLS_COUNT_IN_PIT)
+		self.board.pieces = data_array_to_one_hot([9, 9, 9, 9, 9, 9, 9, 10, 10,		9, 9, 9, 9, 9, 9, 9, 1, 2],MAX_ARRAY_LEN_OF_ENCODED_PIT_STATE)
 		
 		# print(one_hot_batch_to_array(self.board.pieces))
 		self.assertEqual(one_hot_batch_to_array(self.board.execute_move(8,1)),		[9, 9, 9, 9, 9, 9, 9, 10, 1, 10, 10, 10, 10, 10, 10, 10, 2, 3])

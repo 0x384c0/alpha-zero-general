@@ -8,7 +8,7 @@ HEIGHT = 2
 
 INIT_BALLS_COUNT_IN_PIT = 9
 
-MAX_BALLS_COUNT_IN_PIT = 18 # TODO: find rignt value
+MAX_ARRAY_LEN_OF_ENCODED_PIT_STATE = 18 # TODO: find rignt value
 BOARD_SIZE =  WIDTH * HEIGHT
 WIN_SCORE = (BOARD_SIZE * WIDTH)/HEIGHT - 1
 
@@ -18,7 +18,7 @@ WIN_SCORE = (BOARD_SIZE * WIDTH)/HEIGHT - 1
 
 class Board():
 
-	shape = (WIDTH * HEIGHT,MAX_BALLS_COUNT_IN_PIT)
+	shape = (WIDTH * HEIGHT,MAX_ARRAY_LEN_OF_ENCODED_PIT_STATE)
 	action_size = BOARD_SIZE
 
 	def __init__(self):
@@ -33,7 +33,7 @@ class Board():
 			1	:	None,	# player 1
 			-1	:	None	# player -1
 		}
-		self.pieces = data_array_to_one_hot(self.__init_state,MAX_BALLS_COUNT_IN_PIT)
+		self.pieces = data_array_to_one_hot(self.__init_state,MAX_ARRAY_LEN_OF_ENCODED_PIT_STATE)
 
 
 
@@ -99,7 +99,7 @@ class Board():
 			self.__players_scores[player] += game_state[last_pit_looped]
 			game_state[last_pit_looped] = 0
 			self.__players_tuz[player] = last_pit_looped
-		self.pieces = data_array_to_one_hot(game_state,MAX_BALLS_COUNT_IN_PIT)
+		self.pieces = data_array_to_one_hot(game_state,MAX_ARRAY_LEN_OF_ENCODED_PIT_STATE)
 		return self.pieces
 
 	def __generate_valid_moves(self,player):

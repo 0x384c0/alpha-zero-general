@@ -26,8 +26,8 @@ class TKGame(Game):
         return Board.shape
 
     def getActionSize(self):
-        debug_print(Board.action_size)
-        return Board.action_size
+        debug_print(Board.action_size + 1)
+        return Board.action_size + 1
 
     def getNextState(self, board, player, action):
         b = Board()
@@ -40,6 +40,7 @@ class TKGame(Game):
         b = Board()
         b.pieces = np.copy(board)
         legalMoves =  b.get_legal_moves(player)
+        legalMoves.append(0)
         debug_print(np.array(legalMoves))
         return np.array(legalMoves)
 
@@ -65,6 +66,12 @@ class TKGame(Game):
         return player*board
 
     def getSymmetries(self, board, pi):
+        pi = np.array(pi)
+
+        print("board.shape " + str(board.shape))
+        print("pi" + str(pi))
+        print("pi[:-1] " + str(pi[:-1]))
+        print("pi[:-1].size " + str(len(pi[:-1])))
         # mirror, rotational
         # assert(len(pi) == self.n**2+1)  # 1 for pass
         pi_board = np.reshape(pi[:-1], board.shape)
