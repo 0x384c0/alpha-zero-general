@@ -40,6 +40,11 @@ class MCTS():
             probs[bestA]=1
             return probs
 
+
+        if sum(counts) == 0:
+            print("s " + s, flush=True)
+            raise ValueError('sum(counts) == 0')
+
         counts = [x**(1./temp) for x in counts]
         probs = [x/float(sum(counts)) for x in counts]
         return probs

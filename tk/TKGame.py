@@ -8,7 +8,15 @@ import numpy as np
 
 
 def debug_print(data):
-    print('\033[95m' + sys._getframe(1).f_code.co_name + '\033[0m' + '\n' + '\033[92m' + str(data) + '\033[0m')
+    pass
+    # funcs = [
+    # # "getSymmetries",
+    # # "getCanonicalForm",
+    # "getNextState",
+    # ]
+    # if sys._getframe(1).f_code.co_name not in funcs:
+    #     return
+    # print('\033[95m' + sys._getframe(1).f_code.co_name + '\033[0m' + '\n' + '\033[92m' + str(data) + '\033[0m')
 
 
 class TKGame(Game):
@@ -26,8 +34,8 @@ class TKGame(Game):
         return Board.shape
 
     def getActionSize(self):
-        debug_print(Board.action_size + 1)
-        return Board.action_size + 1
+        debug_print(Board.action_size)
+        return Board.action_size
 
     def getNextState(self, board, player, action):
         b = Board()
@@ -40,12 +48,11 @@ class TKGame(Game):
         b = Board()
         b.pieces = np.copy(board)
         legalMoves =  b.get_legal_moves(player)
-        legalMoves.append(0)
         debug_print(np.array(legalMoves))
         return np.array(legalMoves)
 
     def getGameEnded(self, board, player):
-        b = Board()
+        b = Board() #TODO: add other boars states params
         b.pieces = np.copy(board)
 
         if b.is_win(player):
@@ -62,36 +69,23 @@ class TKGame(Game):
         return 1e-4
 
     def getCanonicalForm(self, board, player):
-        debug_print(player*board)
-        return player*board
+        if player == 1:
+            result = board
+        else:
+            result = board[::-1]
+        debug_print(result)
+        return result
+
 
     def getSymmetries(self, board, pi):
-        pi = np.array(pi)
+        # no symmetries
+        debug_print([(board,pi)])
+        return [(board,pi)]
 
-        print("board.shape " + str(board.shape))
-        print("pi" + str(pi))
-        print("pi[:-1] " + str(pi[:-1]))
-        print("pi[:-1].size " + str(len(pi[:-1])))
-        # mirror, rotational
-        # assert(len(pi) == self.n**2+1)  # 1 for pass
-        pi_board = np.reshape(pi[:-1], board.shape)
-        l = []
-
-        for i in range(1, 5):
-            for j in [True, False]:
-                newB = np.rot90(board, i)
-                newPi = np.rot90(pi_board, i)
-                if j:
-                    newB = np.fliplr(newB)
-                    newPi = np.fliplr(newPi)
-                l += [(newB, list(newPi.ravel()) + [pi[-1]])]
-        
-        debug_print(l)
-        return l
 
     def stringRepresentation(self, board):
-        debug_print(board.tostring())
-        return board.tostring()
+        # debug_print(str(board))
+        return str(board)
 
 
     def display(self):
