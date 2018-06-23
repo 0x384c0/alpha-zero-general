@@ -3,11 +3,11 @@ import unittest
 import sys
 sys.path.append('..')
 
-from TKLogick import Board
-from TKLogick import MAX_BALLS_COUNT_IN_PIT
+from TKLogic import Board
+from TKLogic import MAX_BALLS_COUNT_IN_PIT
 from utils import *
 
-class TestTKLogick(unittest.TestCase):
+class TestTKLogic(unittest.TestCase):
 	def setUp(self):
 		self.board = Board()
 

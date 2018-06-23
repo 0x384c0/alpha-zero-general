@@ -1,6 +1,6 @@
 #! /usr/bin/env python
 # -*- coding: utf-8 -*-
-from utils import *
+from .utils import *
 import numpy as np
 
 WIDTH = 9
@@ -18,9 +18,11 @@ WIN_SCORE = (BOARD_SIZE * WIDTH)/HEIGHT - 1
 
 class Board():
 
+	shape = (WIDTH * HEIGHT,MAX_BALLS_COUNT_IN_PIT)
+	action_size = BOARD_SIZE
+
 	def __init__(self):
 		self.__size = WIDTH * HEIGHT
-		self.__action_size = BOARD_SIZE
 
 		self.__init_state = [INIT_BALLS_COUNT_IN_PIT] * BOARD_SIZE
 		self.__players_scores = {
@@ -101,9 +103,9 @@ class Board():
 		return self.pieces
 
 	def __generate_valid_moves(self,player):
-		possible_moves = [0] * self.__action_size
+		possible_moves = [0] * self.action_size
 		game_state = one_hot_batch_to_array(self.pieces)
-		for i in range(0,self.__action_size):
+		for i in range(0,self.action_size):
 			if (
 				player == 1 and (i < BOARD_SIZE/2) or  #playes 1 side
 				player == -1 and (i >= BOARD_SIZE/2)		#playes -1 side
