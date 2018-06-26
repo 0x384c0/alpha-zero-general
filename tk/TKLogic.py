@@ -1,6 +1,6 @@
 #! /usr/bin/env python
 # -*- coding: utf-8 -*-
-from .utils import *
+from utils import *
 import numpy as np
 
 WIDTH = 9
@@ -10,7 +10,7 @@ INIT_BALLS_COUNT_IN_PIT = 9
 
 MAX_ARRAY_LEN_OF_ENCODED_PIT_STATE = 9 * 3 # TODO: find rignt value
 BOARD_SIZE =  WIDTH * HEIGHT
-WIN_SCORE = (BOARD_SIZE * WIDTH)/HEIGHT - 1
+WIN_SCORE = (BOARD_SIZE * WIDTH)/HEIGHT
 
 
 # 0-9 	- player 1
@@ -18,13 +18,16 @@ WIN_SCORE = (BOARD_SIZE * WIDTH)/HEIGHT - 1
 
 class Board():
 
-	shape = (WIDTH * HEIGHT,MAX_ARRAY_LEN_OF_ENCODED_PIT_STATE)
+
+	__additional_components_count = 4
+	shape = (BOARD_SIZE + __additional_components_count,MAX_ARRAY_LEN_OF_ENCODED_PIT_STATE)
 	action_size = BOARD_SIZE
 
 	def __init__(self):
 		self.__size = WIDTH * HEIGHT
-
 		self.__init_state = [INIT_BALLS_COUNT_IN_PIT] * BOARD_SIZE
+
+		self.__pieces = self.__init_state # data_array_to_one_hot(self.__init_state,MAX_ARRAY_LEN_OF_ENCODED_PIT_STATE)
 		self.__players_scores = {
 			1	:	0,	# player 1
 			-1	:	0	# player -1
@@ -33,13 +36,30 @@ class Board():
 			1	:	None,	# player 1
 			-1	:	None	# player -1
 		}
-		self.pieces = data_array_to_one_hot(self.__init_state,MAX_ARRAY_LEN_OF_ENCODED_PIT_STATE)
 
 
 
 
 	def __getitem__(self, index): 
-		return self.pieces[index]
+		return self.get_encoded_state()[index]
+
+	def get_encoded_state(self,player=1):
+		pieces = self.__pieces if player == 1 else self.__pieces[::-1]
+		result = data_array_to_one_hot_with_shape(pieces,self.shape)
+		result[BOARD_SIZE]		= number_to_bits_array(self.__players_scores[player],			MAX_ARRAY_LEN_OF_ENCODED_PIT_STATE)
+		result[BOARD_SIZE + 1]	= number_to_bits_array(self.__players_scores[-player],			MAX_ARRAY_LEN_OF_ENCODED_PIT_STATE)
+		result[BOARD_SIZE + 2]	= number_to_onehot(self.__players_tuz[player],					MAX_ARRAY_LEN_OF_ENCODED_PIT_STATE)
+		result[BOARD_SIZE + 3]	= number_to_onehot(self.__players_tuz[-player],					MAX_ARRAY_LEN_OF_ENCODED_PIT_STATE)
+		return result
+
+	def set_encoded_state(self,state):
+		self.__pieces 				= one_hot_batch_to_array(state[0:BOARD_SIZE])
+		self.__players_scores[1]	= bits_array_to_number(state[BOARD_SIZE])
+		self.__players_scores[-1]	= bits_array_to_number(state[BOARD_SIZE + 1])
+		self.__players_tuz[1]		= onehot_to_number(state[BOARD_SIZE + 2])
+		self.__players_tuz[-1]		= onehot_to_number(state[BOARD_SIZE + 3])
+
+
 
 	def get_legal_moves(self, player):
 		return self.__generate_valid_moves(player)
@@ -51,7 +71,7 @@ class Board():
 		return self.__players_scores[player] >= WIN_SCORE
 
 	def execute_move(self, move, player):
-		game_state = one_hot_batch_to_array(self.pieces)
+		game_state = self.__pieces
 		balls_in_first_pit = game_state[move]
 		last_pit = move + balls_in_first_pit
 		last_pit_looped = last_pit if last_pit < len(game_state) 	else last_pit - (len(game_state))
@@ -99,12 +119,12 @@ class Board():
 			self.__players_scores[player] += game_state[last_pit_looped]
 			game_state[last_pit_looped] = 0
 			self.__players_tuz[player] = last_pit_looped
-		self.pieces = data_array_to_one_hot(game_state,MAX_ARRAY_LEN_OF_ENCODED_PIT_STATE)
-		return self.pieces
+		self.__pieces = game_state
+		return self.get_encoded_state()
 
 	def __generate_valid_moves(self,player):
 		possible_moves = [0] * self.action_size
-		game_state = one_hot_batch_to_array(self.pieces)
+		game_state = self.__pieces
 		for i in range(0,self.action_size):
 			if (
 				player == 1 and (i < BOARD_SIZE/2) or  #playes 1 side
@@ -131,8 +151,8 @@ class Board():
 
 
 #for tests
-	def get_player_score(self,player):
-		return self.__players_scores[player]
+	def set_pieces(self,pieces):
+		self.__pieces = pieces
 
-	def set_player_score(self,score,player):
-		self.__players_scores[player] = score
+	def get_pieces(self):
+		return self.__pieces

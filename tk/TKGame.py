@@ -25,8 +25,8 @@ class TKGame(Game):
 
     def getInitBoard(self):
         b = Board()
-        debug_print(np.array(b.pieces))
-        return np.array(b.pieces)
+        debug_print(np.array(b.get_encoded_state()))
+        return np.array(b.get_encoded_state())
 
     def getBoardSize(self):
         # (a,b) tuple
@@ -39,21 +39,21 @@ class TKGame(Game):
 
     def getNextState(self, board, player, action):
         b = Board()
-        b.pieces = np.copy(board)
+        b.set_encoded_state(np.copy(board))
         b.execute_move(action, player)
-        debug_print("action: " + str(action) + " -> " + str((b.pieces, -player)))
-        return (b.pieces, -player)
+        debug_print("action: " + str(action) + " -> " + str((b.get_encoded_state(), -player)))
+        return (b.get_encoded_state(), -player)
 
     def getValidMoves(self, board, player):
         b = Board()
-        b.pieces = np.copy(board)
+        b.set_encoded_state(np.copy(board))
         legalMoves =  b.get_legal_moves(player)
         debug_print(np.array(legalMoves))
         return np.array(legalMoves)
 
     def getGameEnded(self, board, player):
         b = Board() #TODO: add other boars states params
-        b.pieces = np.copy(board)
+        b.set_encoded_state(np.copy(board))
 
         if b.is_win(player):
             debug_print("1")
@@ -69,12 +69,12 @@ class TKGame(Game):
         return 1e-4
 
     def getCanonicalForm(self, board, player):
-        if player == 1:
-            result = board
-        else:
-            result = board[::-1]
-        debug_print(result)
-        return result
+        # if player == 1:
+        #     result = board
+        # else:
+        #     result = board[::-1]
+        # debug_print(result)
+        return board#result
 
 
     def getSymmetries(self, board, pi):
@@ -89,4 +89,4 @@ class TKGame(Game):
 
 
     def display(self):
-        print("\n" + str(one_hot_batch_to_array(self.pieces)))
+        print("\n" + str(self.get_encoded_state()))
