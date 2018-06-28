@@ -1,4 +1,5 @@
 from Coach import Coach
+import os
 
 # from tictactoe.TicTacToeGame import TicTacToeGame as Game
 # from tictactoe.keras.NNet import NNetWrapper as nn
@@ -19,22 +20,29 @@ args = dotdict({
     'cpuct': 1,
 
     'checkpoint': './temp/',
-    'load_model': False,
-    'load_folder_file': ('/dev/models/8x100x50','best.pth.tar'),
+    'load_model': True,
+    'load_folder_file': ('temp','best.pth.tar'),
     'numItersForTrainExamplesHistory': 20,
 
 })
+
+
+def is_can_load_checkpoint(args):
+    filepath = os.path.join(args.load_folder_file[0], args.load_folder_file[1])
+    return os.path.exists(filepath) and args.load_model
 
 if __name__=="__main__":
     # g = Game(3)
     g = Game()
     nnet = nn(g)
 
-    if args.load_model:
+
+    if is_can_load_checkpoint(args):
+        print("Load checkpoint from file")
         nnet.load_checkpoint(args.load_folder_file[0], args.load_folder_file[1])
 
     c = Coach(g, nnet, args)
-    if args.load_model:
+    if is_can_load_checkpoint(args):
         print("Load trainExamples from file")
         c.loadTrainExamples()
     c.learn()

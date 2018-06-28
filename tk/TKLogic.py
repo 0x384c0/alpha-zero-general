@@ -8,7 +8,7 @@ HEIGHT = 2
 
 INIT_BALLS_COUNT_IN_PIT = 9
 
-MAX_ARRAY_LEN_OF_ENCODED_PIT_STATE = 9 * 3 # TODO: find rignt value
+MAX_ARRAY_LEN_OF_ENCODED_PIT_STATE = 9 * 3 + 3 # TODO: find rignt value
 BOARD_SIZE =  WIDTH * HEIGHT
 WIN_SCORE = (BOARD_SIZE * WIDTH)/HEIGHT
 
@@ -27,7 +27,7 @@ class Board():
 		self.__size = WIDTH * HEIGHT
 		self.__init_state = [INIT_BALLS_COUNT_IN_PIT] * BOARD_SIZE
 
-		self.__pieces = self.__init_state # data_array_to_one_hot(self.__init_state,MAX_ARRAY_LEN_OF_ENCODED_PIT_STATE)
+		self.__pieces = self.__init_state
 		self.__players_scores = {
 			1	:	0,	# player 1
 			-1	:	0	# player -1
@@ -74,13 +74,20 @@ class Board():
 		game_state = self.__pieces
 		balls_in_first_pit = game_state[move]
 		last_pit = move + balls_in_first_pit
-		last_pit_looped = last_pit if last_pit < len(game_state) 	else last_pit - (len(game_state))
+		last_pit_looped = last_pit if last_pit < len(game_state) else last_pit % len(game_state)
 		last_pit_looped -= 1
+		if last_pit_looped < 0:
+			last_pit_looped = len(game_state) - 1
+
 
 
 		if balls_in_first_pit == 1:
 			# Если в исходной лунке только один камень, то он перекладывается в следующую лунку.
 			last_pit_looped += 1
+
+			if last_pit_looped >= len(game_state):
+				last_pit_looped = 0
+
 			game_state[move] = 0
 			game_state[last_pit_looped] += balls_in_first_pit
 		else:
@@ -88,7 +95,7 @@ class Board():
 			game_state[move] = 0
 			for pit in range(move,last_pit):
 				if pit >= len(game_state):
-					pit = pit - len(game_state)
+					pit = pit % len(game_state)
 				game_state[pit] += 1
 
 
@@ -120,6 +127,17 @@ class Board():
 			game_state[last_pit_looped] = 0
 			self.__players_tuz[player] = last_pit_looped
 		self.__pieces = game_state
+
+		if self.__players_tuz[player] is not None and  (self.__players_tuz[player] < 0 or self.__players_tuz[player] >= self.action_size) :
+			print("Warnning: execute_move out of bounds") # TODO: fix
+			print("game_state " + str(game_state))
+			print("tuz " + str(self.__players_tuz[player]))
+			print("move " + str(move))
+			print("player " + str(player))
+			print("last_pit " + str(last_pit))
+			print("last_pit_looped " + str(last_pit_looped))
+			print("balls_in_first_pit" + str(balls_in_first_pit))
+
 		return self.get_encoded_state()
 
 	def __generate_valid_moves(self,player):
@@ -131,8 +149,13 @@ class Board():
 				player == -1 and (i >= BOARD_SIZE/2)		#playes -1 side
 				): 
 				possible_moves[i] = 1 if game_state[i] > 0 else 0
+		
+		if self.__players_tuz[player] is not None and  (self.__players_tuz[player] < 0 or self.__players_tuz[player] >= self.action_size) :
+			print("Warnning: __generate_valid_moves out of bounds")  # TODO: fix
+			print("game_state " + str(game_state))
+			print("tuz " + str(self.__players_tuz[player]))
 
-		if (self.__players_tuz[player] is not None):
+		if (self.__players_tuz[player] is not None and self.__players_tuz[player] > 0 and self.__players_tuz[player] < self.action_size): # TODO: fix index out of range error
 			possible_moves[self.__players_tuz[player]] = 1 if game_state[self.__players_tuz[player]] > 0  else 0
 		return possible_moves
 

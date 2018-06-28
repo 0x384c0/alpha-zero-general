@@ -7,7 +7,11 @@ def data_array_to_one_hot_with_shape(array,shape):
 
 def data_array_to_one_hot(array,onehot_size): #TODO: remove
 	token_ids_one_hot = np.zeros((len(array), onehot_size))
-	token_ids_one_hot[np.arange(len(array)), array] = 1
+	try:
+		token_ids_one_hot[np.arange(len(array)), array] = 1
+	except:
+		print("Warning: data_array_to_one_hot out of bounds")
+		print("array " + str(array))
 	return token_ids_one_hot.tolist()
 
 def one_hot_batch_to_array(one_hot_batch):
@@ -19,8 +23,14 @@ def one_hot_batch_to_array(one_hot_batch):
 
 def number_to_onehot(number,onehot_size):
 	one_hot = np.zeros(onehot_size)
-	if number is not None:
-		one_hot[number] = 1
+
+	try:
+		if number is not None:
+			one_hot[number] = 1
+	except:
+		print("Warning: number_to_onehot out of bounds")
+		print("number " + str(number))
+		
 	return one_hot.tolist()
 
 def onehot_to_number(onehot):

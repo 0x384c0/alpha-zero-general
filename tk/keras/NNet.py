@@ -16,7 +16,7 @@ from .TKNNet import TKNNet as onnet
 args = dotdict({
     'lr': 0.001,
     'dropout': 0.3,
-    'epochs': 10,
+    'epochs': 8,
     'batch_size': 64,
     'cuda': False,
     'num_channels': 128,
