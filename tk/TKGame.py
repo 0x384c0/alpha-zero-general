@@ -88,5 +88,7 @@ class TKGame(Game):
         return str(board)
 
 
-    def display(self):
-        print("\n" + str(self.get_encoded_state()))
+def display(board_state):
+    board = Board()
+    board.set_encoded_state(board_state)
+    print("\n" + str(board.display()))

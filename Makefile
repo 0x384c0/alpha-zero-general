@@ -1,5 +1,10 @@
+PYTHON=python3
+
 test:
-	cd tk && python -m test.testTKLogick
+	cd tk && $(PYTHON) -m test.testTKLogick
 
 run:
-	python main.py
+	$(PYTHON) main.py
+
+play:
+	$(PYTHON) pit.py

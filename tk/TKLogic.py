@@ -172,6 +172,8 @@ class Board():
 		return pit not in players_pit
 
 
+	def display(self):
+		return "pieces: " + str(self.__pieces) + " p1: " + str(self.__players_scores[1]) + " p-1: " + str(self.__players_scores[-1])
 
 #for tests
 	def set_pieces(self,pieces):

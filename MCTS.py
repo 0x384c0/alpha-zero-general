@@ -42,7 +42,6 @@ class MCTS():
 
 
         if sum(counts) == 0:
-            print("s " + s, flush=True)
             raise ValueError('sum(counts) == 0')
 
         counts = [x**(1./temp) for x in counts]

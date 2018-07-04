@@ -12,7 +12,7 @@ class RandomPlayer():
         return a
 
 
-class HumanTicTacToePlayer():
+class HumanTKPlayer():
     def __init__(self, game):
         self.game = game
 
