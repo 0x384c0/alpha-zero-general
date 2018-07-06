@@ -42,4 +42,5 @@ n1p = lambda x: np.argmax(mcts1.getActionProb(x, temp=0))
 #n2p = lambda x: np.argmax(mcts2.getActionProb(x, temp=0))
 
 arena = Arena.Arena(n1p, rp, g, display=display)
-print(arena.playGames(2, verbose=True))
+result = arena.playGames(4, verbose=True)
+print("oneWon: " + str(result[0]) + " twoWon (neural network): " + str(result[1]) + " draw: " + str(result[2]))

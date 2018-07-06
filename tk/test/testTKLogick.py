@@ -72,6 +72,11 @@ class TestTKLogic(unittest.TestCase):
 		self.board.set_encoded_state(generate_encoded_state( 					[9, 9, 9, 9, 9, 9, 9, 9, 9,				25, 9, 9, 9, 9, 9, 9, 9, 9,				0, 0, 	None, None]))
 		self.assertEqual(parse_encoded_state(self.board.execute_move(9,-1)),	[10, 10, 10, 10, 10, 10, 10, 10, 10,	2, 11, 11, 11, 11, 11, 11, 10, 10,		0, 0, 	None, None])
 
+		self.board.set_encoded_state(generate_encoded_state( 					[3, 9, 9, 0, 0, 0, 0, 0, 0,				0, 0, 0, 0, 0, 0, 0, 0, 0,				70, 20,	None, None]))
+		self.assertEqual(parse_encoded_state(self.board.execute_move(0,1)),		[0, 0, 0, 0, 0, 0, 0, 0, 0,				0, 0, 0, 0, 0, 0, 0, 0, 0,				91, 20,	None, None])
+		self.assertEqual(self.board.is_win(1),True)
+
+
 	def test_tuz(self):
 		self.board.set_pieces([9, 9, 9, 9, 9, 9, 9, 10, 10,		9, 9, 9, 9, 9, 9, 9, 1, 2])
 		

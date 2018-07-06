@@ -68,7 +68,17 @@ class Board():
 		return self.__generate_valid_moves(1).count(1) != 0 and self.__generate_valid_moves(-1).count(1) != 0
 
 	def is_win(self, player):
-		return self.__players_scores[player] >= WIN_SCORE
+		#Победа в игре достигается двумя способами:
+
+		#набор в свой казан 82 коргоола или более
+		if self.__players_scores[player] >= WIN_SCORE and self.__players_scores[-player] < WIN_SCORE:
+			return True
+
+		#у противника не осталось ходов (см. ниже «ат сыроо») и при этом он ещё не набрал 81 коргоол
+		if self.__generate_valid_moves(-player).count(1) == 0 and self.__players_scores[-player] < WIN_SCORE:
+			return True
+
+		return False
 
 	def execute_move(self, move, player):
 		game_state = self.__pieces
@@ -138,6 +148,13 @@ class Board():
 			print("last_pit_looped " + str(last_pit_looped))
 			print("balls_in_first_pit" + str(balls_in_first_pit))
 
+		# Ат сыроо Если после хода игрока А все его дома оказываются пустыми (ход «91»), то он попадает в ситуацию «ат сыроо».
+		# Игрок Б делает свой очередной ход. Если после его хода в дома игрока А не попадает ни одного коргоола, то в этой ситуации у игрока А нет ходов и игра заканчивается. Коргоолы из домов игрока Б переходят в казан игрока Б и производится подсчёт коргоолов в казанах.
+		if self.__generate_valid_moves(-player).count(1) == 0:
+			for i, piece in enumerate(self.__pieces):
+				self.__players_scores[player] += piece
+				self.__pieces[i] = 0
+
 		return self.get_encoded_state()
 
 	def __generate_valid_moves(self,player):
@@ -173,7 +190,7 @@ class Board():
 
 
 	def display(self):
-		return "pieces: " + str(self.__pieces) + " p1: " + str(self.__players_scores[1]) + " p-1: " + str(self.__players_scores[-1])
+		return "pieces: " + str(self.__pieces) + "\t\tp1: " + str(self.__players_scores[1]) + " p-1: " + str(self.__players_scores[-1])
 
 #for tests
 	def set_pieces(self,pieces):
