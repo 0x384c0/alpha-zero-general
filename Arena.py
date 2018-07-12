@@ -40,6 +40,7 @@ class Arena():
         it = 0
         while self.game.getGameEnded(board, curPlayer)==0:
             it+=1
+
             if verbose:
                 assert(self.display)
                 player_descr = green("\tPlayer " + str(curPlayer)) if curPlayer == 1 else red("Player " + str(curPlayer))
@@ -47,9 +48,11 @@ class Arena():
                     player_descr += "\t" + self.descriptions[players[curPlayer+1]]
                 print("\nTurn", str(it), player_descr)
                 self.display(board)
-            action = players[curPlayer+1](self.game.getCanonicalForm(board, curPlayer))
 
-            valids = self.game.getValidMoves(self.game.getCanonicalForm(board, curPlayer),1)
+            canonical_form = self.game.getCanonicalForm(board, curPlayer)
+
+            action = players[curPlayer+1](canonical_form)
+            valids = self.game.getValidMoves(canonical_form,1)
 
             if valids[action]==0:
                 assert valids[action] >0

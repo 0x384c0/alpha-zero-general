@@ -69,14 +69,14 @@ class TKGame(Game):
         return 1e-4
 
     def getCanonicalForm(self, board, player):
-        # if player == 1:
-        #     result = board
-        # else:
-        #     result = board[::-1]
-        # debug_print(result)
-        # return result
-        # TODO: make reverce 
-        return board
+        if player == 1:
+            result = board
+        else:
+            b = Board()
+            b.set_encoded_state(np.copy(board))
+            result = b.get_encoded_state(-1)
+        debug_print(result)
+        return result
 
 
     def getSymmetries(self, board, pi):

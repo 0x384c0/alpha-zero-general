@@ -59,11 +59,11 @@ class TestTKLogic(unittest.TestCase):
 		self.assertEqual(self.board.is_win(1),		True)
 
 	def test_execute_move(self):
-		self.assertEqual(parse_encoded_state(self.board.execute_move(1,1)),		[9, 1, 10, 10, 10, 10, 10, 10, 10,		0,  9, 9, 9, 9, 9, 9, 9, 9,		10, 0, None, None])
+		self.assertEqual(parse_encoded_state(self.board.execute_move(1,1)),		[9, 1, 10, 10, 10, 10, 10, 10, 10,		0,  9, 9, 9, 9, 9, 9, 9, 9,				10, 0, None, None])
 		self.setUp()
-		self.assertEqual(parse_encoded_state(self.board.execute_move(1,-1)),	[9, 1, 10, 10, 10, 10, 10, 10, 10,		10, 9, 9, 9, 9, 9, 9, 9, 9,		0, 0, None, None])
+		self.assertEqual(parse_encoded_state(self.board.execute_move(9,-1)),	[9, 9, 9, 9, 9, 9, 9, 9, 9,				1, 10, 10, 10, 10, 10, 10, 10, 10,		0, 0, None, None])
 		self.setUp()
-		self.assertEqual(parse_encoded_state(self.board.execute_move(15,1)),	[10, 10, 10, 10, 10, 10, 9, 9, 9,		9, 9, 9, 9, 9, 9, 1, 10, 10,	0, 0, None, None])
+		self.assertEqual(parse_encoded_state(self.board.execute_move(6,1)),		[9, 9, 9, 9, 9, 9, 1, 10, 10,			10, 10, 10, 10, 10, 0, 9, 9, 9,			10, 0, None, None])
 		self.setUp()
 		self.assertEqual(parse_encoded_state(self.board.execute_move(15,-1)),	[10, 10, 10, 10, 10, 0,  9, 9, 9,		9, 9, 9, 9, 9, 9, 1, 10, 10,	0, 10, None, None])
 		
@@ -84,8 +84,8 @@ class TestTKLogic(unittest.TestCase):
 		self.assertEqual(self.board.get_legal_moves(1),							[1, 1, 1, 1, 1, 1, 1, 1, 1,		0, 0, 0, 0, 0, 0, 0, 0, 0])
 		
 		self.assertEqual(parse_encoded_state(self.board.execute_move(7,1)),		[9, 9, 9, 9, 9, 9, 9, 1, 2,		11, 11, 11, 11, 11, 11, 11, 0, 3,		3, 0, 	16, None])
-		self.assertEqual(parse_encoded_state(self.board.execute_move(9,1)),		[10, 10, 9, 9, 9, 9, 9, 1, 2,	1, 12, 12, 12, 12, 12, 12, 1, 4,		3, 0,	16, None])
-		self.assertEqual(self.board.get_legal_moves(1),							[1, 1, 1, 1, 1, 1, 1, 1, 1,		0, 0, 0, 0, 0, 0, 0, 1, 0])
+		self.assertEqual(parse_encoded_state(self.board.execute_move(9,-1)),	[10, 0, 9, 9, 9, 9, 9, 1, 2,	1, 12, 12, 12, 12, 12, 12, 1, 4,		3, 10,	16, None])
+		self.assertEqual(self.board.get_legal_moves(1),							[1, 0, 1, 1, 1, 1, 1, 1, 1,		0, 0, 0, 0, 0, 0, 0, 1, 0])
 
 	def test_encoded_state(self):
 		state = 	[9, 9, 9, 9, 1, 9, 9, 9, 9,		9, 9, 9, 9, 9, 9, 9, 9, 9,		1,16,		1,None]

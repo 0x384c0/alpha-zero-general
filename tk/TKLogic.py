@@ -81,6 +81,11 @@ class Board():
 		return False
 
 	def execute_move(self, move, player):
+		#check valid moves
+		valids = self.__generate_valid_moves(player)
+		assert(valids[move] != 0) 
+
+
 		game_state = self.__pieces
 		balls_in_first_pit = game_state[move]
 		last_pit = move + balls_in_first_pit
