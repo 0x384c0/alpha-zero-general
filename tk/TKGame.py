@@ -74,7 +74,9 @@ class TKGame(Game):
         # else:
         #     result = board[::-1]
         # debug_print(result)
-        return board#result
+        # return result
+        # TODO: make reverce 
+        return board
 
 
     def getSymmetries(self, board, pi):
@@ -91,4 +93,4 @@ class TKGame(Game):
 def display(board_state):
     board = Board()
     board.set_encoded_state(board_state)
-    print("\n" + str(board.display()))
+    print(str(board.display()))

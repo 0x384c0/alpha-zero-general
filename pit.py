@@ -23,7 +23,6 @@ g = TKGame()
 
 # all players
 rp = RandomPlayer(g).play
-# hp = HumanTicTacToePlayer(g).play
 hp = HumanTKPlayer(g).play
 
 # nnet players
@@ -34,7 +33,11 @@ args1 = dotdict({'numMCTSSims': 50, 'cpuct':1.0})
 mcts1 = MCTS(g, n1, args1)
 n1p = lambda x: np.argmax(mcts1.getActionProb(x, temp=0))
 
-
+descriptions = {
+	rp : "Random Player",
+	hp : "Human Player",
+	n1p : "NNet Player"
+}
 #n2 = NNet(g)
 #n2.load_checkpoint('/dev/8x50x25/','best.pth.tar')
 #args2 = dotdict({'numMCTSSims': 25, 'cpuct':1.0})
@@ -42,5 +45,6 @@ n1p = lambda x: np.argmax(mcts1.getActionProb(x, temp=0))
 #n2p = lambda x: np.argmax(mcts2.getActionProb(x, temp=0))
 
 arena = Arena.Arena(n1p, rp, g, display=display)
+arena.descriptions = descriptions
 result = arena.playGames(4, verbose=True)
 print("oneWon: " + str(result[0]) + " twoWon (neural network): " + str(result[1]) + " draw: " + str(result[2]))

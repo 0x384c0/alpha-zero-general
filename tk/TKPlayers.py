@@ -17,8 +17,12 @@ class HumanTKPlayer():
         self.game = game
 
     def play(self, board):
-        board.display()
         valid = self.game.getValidMoves(board, 1)
+        print("\n")
+        print('\t'.join(map(int_to_bool_string, valid)))
+        print('\t'.join(map(str, range(len(valid)))))
+        print("\n")
+        exit()
         for i in range(len(valid)):
             if valid[i]:
                 print(int(i/self.game.n), int(i%self.game.n))
@@ -36,3 +40,7 @@ class HumanTKPlayer():
                 print('Invalid')
 
         return a
+
+
+def int_to_bool_string(int):
+    return "\033[32mYES\033[0m" if int > 0 else "\033[31mNO\033[0m"

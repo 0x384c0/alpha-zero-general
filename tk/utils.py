@@ -45,3 +45,15 @@ def number_to_bits_array(number,array_size):
 def bits_array_to_number(array):
 	array = list(map(lambda x: int(x),array[-8:]))
 	return np.packbits(array)[0]
+
+
+
+
+def red(obj):
+	return "\033[31m"+ str(obj) + "\033[0m"
+
+def green(obj):
+	return "\033[32m"+ str(obj) + "\033[0m"
+
+def bpurple(obj):
+	return "\033[1;35m"+ str(obj) + "\033[0m"

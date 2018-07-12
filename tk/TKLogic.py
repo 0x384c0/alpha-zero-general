@@ -13,8 +13,8 @@ BOARD_SIZE =  WIDTH * HEIGHT
 WIN_SCORE = (BOARD_SIZE * WIDTH)/HEIGHT
 
 
-# 0-9 	- player 1
-# 10-18 - player -1
+# 0-9 	- player 1		green
+# 10-18 - player -1		red
 
 class Board():
 
@@ -190,7 +190,17 @@ class Board():
 
 
 	def display(self):
-		return "pieces: " + str(self.__pieces) + "\t\tp1: " + str(self.__players_scores[1]) + " p-1: " + str(self.__players_scores[-1])
+		str_pieces = []
+		green_valids = self.__generate_valid_moves(1) #valids for green
+		red_valids = self.__generate_valid_moves(-1) #valids for red
+		for counter, value in enumerate( self.__pieces):
+			if green_valids[counter] == 1:
+				str_pieces.append(green(value))
+			elif red_valids[counter] == 1:
+				str_pieces.append(red(value))
+			else:
+				str_pieces.append(str(value))
+		return "pieces: " + "\t".join(str_pieces) + "\tscores: " + green("p1 - " + str(self.__players_scores[1])) + red(" p-1 - " + str(self.__players_scores[-1]))
 
 #for tests
 	def set_pieces(self,pieces):

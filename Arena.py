@@ -1,6 +1,7 @@
 import numpy as np
 from pytorch_classification.utils import Bar, AverageMeter
 import time
+from utils import *
 
 class Arena():
     """
@@ -41,15 +42,18 @@ class Arena():
             it+=1
             if verbose:
                 assert(self.display)
-                print("Turn ", str(it), "Player ", str(curPlayer))
+                player_descr = green("\tPlayer " + str(curPlayer)) if curPlayer == 1 else red("Player " + str(curPlayer))
+                if self.descriptions != None:
+                    player_descr += "\t" + self.descriptions[players[curPlayer+1]]
+                print("\nTurn", str(it), player_descr)
                 self.display(board)
             action = players[curPlayer+1](self.game.getCanonicalForm(board, curPlayer))
 
             valids = self.game.getValidMoves(self.game.getCanonicalForm(board, curPlayer),1)
 
             if valids[action]==0:
-                print(action)
                 assert valids[action] >0
+            print("taken action: " + bpurple(action) + "\t of valid actions: " + str(valids))
             board, curPlayer = self.game.getNextState(board, curPlayer, action)
         if verbose:
             assert(self.display)
