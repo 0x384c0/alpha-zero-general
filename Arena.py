@@ -46,18 +46,33 @@ class Arena():
                 player_descr = green("\tPlayer " + str(curPlayer)) if curPlayer == 1 else red("Player " + str(curPlayer))
                 if self.descriptions != None:
                     player_descr += "\t" + self.descriptions[players[curPlayer+1]]
-                print("\nTurn", str(it), player_descr)
+                print("\n --- Turn", str(it), player_descr)
                 self.display(board)
 
             canonical_form = self.game.getCanonicalForm(board, curPlayer)
 
-            action = players[curPlayer+1](canonical_form)
-            valids = self.game.getValidMoves(canonical_form,1)
+            canonical_action = players[curPlayer+1](canonical_form)
+            canonical_valids = self.game.getValidMoves(canonical_form,1)
+
+            if curPlayer == 1:
+                action = canonical_action
+                valids = canonical_valids
+            else:
+                action = len(canonical_valids) - 1 - canonical_action
+                valids = canonical_valids[::-1]
+
+            print("taken action: " + bpurple(action) + "\t of valid actions: " + str(valids))
 
             if valids[action]==0:
-                assert valids[action] >0
-            print("taken action: " + bpurple(action) + "\t of valid actions: " + str(valids))
-            board, curPlayer = self.game.getNextState(board, curPlayer, action)
+                print("len(canonical_valids)")
+                print(len(canonical_valids))
+                print("canonical_action")
+                print(canonical_action)
+                print("canonical_valids")
+                print(canonical_valids)
+                assert valids[action] > 0
+
+            board, curPlayer = self.game.getNextState(board, curPlayer, action)  #TODO: fix missing tuz. tuz exists in valids but missing in valids insid checking in getNextState
         if verbose:
             assert(self.display)
             print("Game over: Turn ", str(it), "Result ", str(self.game.getGameEnded(board, 1)))

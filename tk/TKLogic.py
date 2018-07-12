@@ -83,7 +83,12 @@ class Board():
 	def execute_move(self, move, player):
 		#check valid moves
 		valids = self.__generate_valid_moves(player)
-		assert(valids[move] != 0) 
+		if valids[move] == 0: #TODO: fix missing tuz
+			print("valids")
+			print(valids)
+			print("move")
+			print(move)
+			raise ValueError('Invalid action')
 
 
 		game_state = self.__pieces
