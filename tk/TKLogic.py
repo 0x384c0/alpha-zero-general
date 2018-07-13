@@ -8,7 +8,7 @@ HEIGHT = 2
 
 INIT_BALLS_COUNT_IN_PIT = 9
 
-MAX_ARRAY_LEN_OF_ENCODED_PIT_STATE = 9 * 3 + 3 # TODO: find rignt value
+MAX_ARRAY_LEN_OF_ENCODED_PIT_STATE = 30 # TODO: find rignt value
 BOARD_SIZE =  WIDTH * HEIGHT
 WIN_SCORE = (BOARD_SIZE * WIDTH)/HEIGHT
 
@@ -83,7 +83,11 @@ class Board():
 	def execute_move(self, move, player):
 		#check valid moves
 		valids = self.__generate_valid_moves(player)
-		if valids[move] == 0: #TODO: fix missing tuz
+		if valids[move] == 0: #TODO: fix missing 
+			print("self.__pieces")
+			print(self.__pieces)
+			print("self.__players_tuz")
+			print(self.__players_tuz)
 			print("valids")
 			print(valids)
 			print("move")
@@ -138,10 +142,11 @@ class Board():
 		# 1) игрок не может завести себе туз в самом последнем (девятом) доме соперника,
 		# 2) игрок не может завести себе туз в доме с таким же порядковым номером, который имеет лунка-туз соперника,
 		# 3) каждый игрок в течение игры может завести себе только один туз.
-		if (game_state[last_pit_looped] 	== 3					and 
-			move 							!= opponents_last_pit	and
-			last_pit_looped 				!= opponents_tuz		and
-			self.__players_tuz[player] 		== None):
+		if (self.__is_pit_dont_belongs_to_player(last_pit_looped,player)	and
+			game_state[last_pit_looped]		== 3							and
+			move 							!= opponents_last_pit			and
+			last_pit_looped 				!= opponents_tuz				and
+			self.__players_tuz[player]		== None):
 			#Эти три коргоола попадают в казан игрока
 			self.__players_scores[player] += game_state[last_pit_looped]
 			game_state[last_pit_looped] = 0
@@ -182,7 +187,7 @@ class Board():
 			print("game_state " + str(game_state))
 			print("tuz " + str(self.__players_tuz[player]))
 
-		if (self.__players_tuz[player] is not None and self.__players_tuz[player] > 0 and self.__players_tuz[player] < self.action_size): # TODO: fix index out of range error
+		if (self.__players_tuz[player] is not None and self.__players_tuz[player] >= 0 and self.__players_tuz[player] < self.action_size):
 			possible_moves[self.__players_tuz[player]] = 1 if game_state[self.__players_tuz[player]] > 0  else 0
 		return possible_moves
 
@@ -210,7 +215,7 @@ class Board():
 				str_pieces.append(red(value))
 			else:
 				str_pieces.append(str(value))
-		return "pieces: " + "\t".join(str_pieces) + "\tscores: " + green("p1 - " + str(self.__players_scores[1])) + red(" p-1 - " + str(self.__players_scores[-1]))
+		return "pieces: " + "\t".join(str_pieces) + "\tscores: " + green("p1 - " + str(self.__players_scores[1])) + red(" p-1 - " + str(self.__players_scores[-1])) + " tuz: " + green("p1 - " + str(self.__players_tuz[1])) + red(" p-1 - " + str(self.__players_tuz[-1]))
 
 #for tests
 	def set_pieces(self,pieces):
@@ -218,3 +223,6 @@ class Board():
 
 	def get_pieces(self):
 		return self.__pieces
+
+	def get_tuz(self):
+		return self.__players_tuz

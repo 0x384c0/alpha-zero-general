@@ -87,6 +87,20 @@ class TestTKLogic(unittest.TestCase):
 		self.assertEqual(parse_encoded_state(self.board.execute_move(9,-1)),	[10, 0, 9, 9, 9, 9, 9, 1, 2,	1, 12, 12, 12, 12, 12, 12, 1, 4,		3, 10,	16, None])
 		self.assertEqual(self.board.get_legal_moves(1),							[1, 0, 1, 1, 1, 1, 1, 1, 1,		0, 0, 0, 0, 0, 0, 0, 1, 0])
 
+		self.setUp()
+		self.board.set_pieces([1, 2, 4, 6, 20, 16, 13, 0, 1,	1, 2, 2, 1, 1, 7, 3, 2, 5])
+		self.board.execute_move(0,1)
+		self.assertEqual(self.board.get_tuz(),		{1: None, -1: None})
+
+		self.setUp()
+		self.board.set_pieces([1, 1, 2, 3, 1, 1, 8, 6, 15,	1, 2, 1, 16, 3, 4, 3, 1, 5])
+		self.board.get_tuz()[-1] = 1
+		self.assertEqual(self.board.get_legal_moves(-1),							[0, 1, 0, 0, 0, 0, 0, 0, 0,		1, 1, 1, 1, 1, 1, 1, 1, 1,])
+		self.board.get_tuz()[-1] = 0
+		self.assertEqual(self.board.get_legal_moves(-1),							[1, 0, 0, 0, 0, 0, 0, 0, 0,		1, 1, 1, 1, 1, 1, 1, 1, 1,])
+
+
+
 	def test_encoded_state(self):
 		state = 	[9, 9, 9, 9, 1, 9, 9, 9, 9,		9, 9, 9, 9, 9, 9, 9, 9, 9,		1,16,		1,None]
 		state_rev = [9, 9, 9, 9, 9, 9, 9, 9, 9,		9, 9, 9, 9, 1, 9, 9, 9, 9,		16, 1,		None, 1]
