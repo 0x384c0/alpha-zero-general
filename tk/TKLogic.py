@@ -8,7 +8,7 @@ HEIGHT = 2
 
 INIT_BALLS_COUNT_IN_PIT = 9
 
-MAX_ARRAY_LEN_OF_ENCODED_PIT_STATE = 30 # TODO: find rignt value
+MAX_ARRAY_LEN_OF_ENCODED_PIT_STATE = 40 # TODO: find rignt value
 BOARD_SIZE =  WIDTH * HEIGHT
 WIN_SCORE = (BOARD_SIZE * WIDTH)/HEIGHT
 
@@ -82,17 +82,18 @@ class Board():
 
 	def execute_move(self, move, player):
 		#check valid moves
-		valids = self.__generate_valid_moves(player)
-		if valids[move] == 0: #TODO: fix missing 
-			print("self.__pieces")
-			print(self.__pieces)
-			print("self.__players_tuz")
-			print(self.__players_tuz)
-			print("valids")
-			print(valids)
-			print("move")
-			print(move)
-			raise ValueError('Invalid action')
+		if is_debug_mode():
+			valids = self.__generate_valid_moves(player)
+			if valids[move] == 0: #TODO: fix missing 
+				print("self.__pieces")
+				print(self.__pieces)
+				print("self.__players_tuz")
+				print(self.__players_tuz)
+				print("valids")
+				print(valids)
+				print("move")
+				print(move)
+				raise ValueError('Invalid action')
 
 
 		game_state = self.__pieces
@@ -153,7 +154,7 @@ class Board():
 			self.__players_tuz[player] = last_pit_looped
 		self.__pieces = game_state
 
-		if self.__players_tuz[player] is not None and  (self.__players_tuz[player] < 0 or self.__players_tuz[player] >= self.action_size) :
+		if self.__players_tuz[player] is not None and  (self.__players_tuz[player] < 0 or self.__players_tuz[player] >= self.action_size):
 			print("Warnning: execute_move out of bounds") # TODO: fix
 			print("game_state " + str(game_state))
 			print("tuz " + str(self.__players_tuz[player]))

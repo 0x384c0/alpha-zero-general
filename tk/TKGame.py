@@ -12,7 +12,8 @@ def debug_print(data):
     # funcs = [
     # # "getSymmetries",
     # # "getCanonicalForm",
-    # "getNextState",
+    # # "getNextState",
+    # "stringRepresentation",
     # ]
     # if sys._getframe(1).f_code.co_name not in funcs:
     #     return
@@ -86,7 +87,7 @@ class TKGame(Game):
 
 
     def stringRepresentation(self, board):
-        # debug_print(str(board))
+        debug_print(str(board))
         return str(board)
 
 

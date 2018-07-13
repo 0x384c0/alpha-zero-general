@@ -108,6 +108,12 @@ class TestTKLogic(unittest.TestCase):
 		self.assertEqual(state, parse_encoded_state(self.board.get_encoded_state()))
 		self.assertEqual(state_rev, parse_encoded_state(self.board.get_encoded_state(-1)))
 
+		self.board.set_encoded_state(generate_encoded_state(state))
+		string_board = str(self.board.get_encoded_state())
+		canonical_board_for_other_player = self.board.get_encoded_state(-1)
+		self.board.set_encoded_state(canonical_board_for_other_player)
+		self.assertEqual(string_board,str(self.board.get_encoded_state(-1)))
+
 
 
 

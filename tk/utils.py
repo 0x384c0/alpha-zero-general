@@ -1,4 +1,5 @@
 import numpy as np
+import os
 
 def data_array_to_one_hot_with_shape(array,shape):
 	token_ids_one_hot = np.zeros((shape[0], shape[1]))
@@ -46,6 +47,12 @@ def bits_array_to_number(array):
 	array = list(map(lambda x: int(x),array[-8:]))
 	return np.packbits(array)[0]
 
+is_debug_mode_result = None
+def is_debug_mode():
+	global is_debug_mode_result
+	if is_debug_mode_result == None:
+		is_debug_mode_result = os.getenv('DEBUG_MODE', "False")
+	return os.getenv('DEBUG_MODE', "False") == "True"
 
 
 
