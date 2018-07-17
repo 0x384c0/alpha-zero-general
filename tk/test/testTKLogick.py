@@ -4,7 +4,7 @@ import sys
 sys.path.append('..')
 
 from TKLogic import Board
-from TKLogic import MAX_ARRAY_LEN_OF_ENCODED_PIT_STATE,BOARD_SIZE,WIN_SCORE
+from TKLogic import MAX_ARRAY_LEN_OF_ENCODED_PIT_STATE, BOARD_SIZE, WIN_SCORE
 from utils import *
 
 def generate_encoded_state(state):
@@ -13,14 +13,58 @@ def generate_encoded_state(state):
 	result.append(number_to_bits_array(state[19],		MAX_ARRAY_LEN_OF_ENCODED_PIT_STATE))
 	result.append(number_to_onehot(state[20],			MAX_ARRAY_LEN_OF_ENCODED_PIT_STATE))
 	result.append(number_to_onehot(state[21],			MAX_ARRAY_LEN_OF_ENCODED_PIT_STATE))
+
+
+	pieces = state[0:18]
+	mid=int((len(pieces) + 1) / 2)
+
+	firstHalf = data_array_to_one_hot_with_shape(pieces[:mid],		(11,MAX_ARRAY_LEN_OF_ENCODED_PIT_STATE))
+	firstHalf[9] = number_to_bits_array(state[18],				MAX_ARRAY_LEN_OF_ENCODED_PIT_STATE)
+	firstHalf[10] = number_to_onehot(state[20],					MAX_ARRAY_LEN_OF_ENCODED_PIT_STATE)
+
+	secondHalf = data_array_to_one_hot_with_shape(pieces[mid:],		(11,MAX_ARRAY_LEN_OF_ENCODED_PIT_STATE))
+	secondHalf[9] = number_to_bits_array(state[19],				MAX_ARRAY_LEN_OF_ENCODED_PIT_STATE)
+	secondHalf[10] = number_to_onehot(state[21],				MAX_ARRAY_LEN_OF_ENCODED_PIT_STATE)
+
+	secondHalf *= -1
+
+	result = np.concatenate((firstHalf, secondHalf), axis=0)
+
 	return result
 
 def parse_encoded_state(state):
-	result 				= one_hot_batch_to_array(state[0:BOARD_SIZE])
-	result.append(bits_array_to_number(state[BOARD_SIZE]))
-	result.append(bits_array_to_number(state[BOARD_SIZE + 1]))
-	result.append(onehot_to_number(state[BOARD_SIZE + 2]))
-	result.append(onehot_to_number(state[BOARD_SIZE + 3]))
+
+	HALF_BOARD_SIZE = int(BOARD_SIZE/2)
+	mid=int((len(state) + 1) / 2)
+	firstHalf = state[:mid]
+	secondHalf = state[mid:]
+	firstSum = 0
+	secondSum = 0
+
+
+
+	for onehot in firstHalf:
+		firstSum += sum(onehot)
+
+	for onehot in secondHalf:
+		secondSum += sum(onehot)
+
+	if firstSum > 0 or secondSum < 0: # playe 1 in firstHalf
+		pass
+	else: #player -1 in firstHalf
+		firstHalf,secondHalf = secondHalf,firstHalf
+
+	secondHalf *= -1 #at this point second half always contains negative numbers
+
+
+
+	result =		one_hot_batch_to_array(firstHalf[:HALF_BOARD_SIZE])
+	result +=		one_hot_batch_to_array(secondHalf[:HALF_BOARD_SIZE])
+
+	result.append(bits_array_to_number(firstHalf[HALF_BOARD_SIZE]))
+	result.append(bits_array_to_number(secondHalf[HALF_BOARD_SIZE]))
+	result.append(onehot_to_number(firstHalf[HALF_BOARD_SIZE + 1]))
+	result.append(onehot_to_number(secondHalf[HALF_BOARD_SIZE + 1]))
 	return result
 
 
@@ -109,12 +153,11 @@ class TestTKLogic(unittest.TestCase):
 		self.assertEqual(state_rev, parse_encoded_state(self.board.get_encoded_state(-1)))
 
 		self.board.set_encoded_state(generate_encoded_state(state))
-		string_board = str(self.board.get_encoded_state())
+		canonical_board_for_player = self.board.get_encoded_state()
 		canonical_board_for_other_player = self.board.get_encoded_state(-1)
+		self.assertEqual(str(self.board.get_encoded_state()),str(self.board.get_encoded_state(-1) * -1))
 		self.board.set_encoded_state(canonical_board_for_other_player)
-		self.assertEqual(string_board,str(self.board.get_encoded_state(-1)))
-
-
+		self.assertEqual(parse_encoded_state( canonical_board_for_player),parse_encoded_state(self.board.get_encoded_state(-1)))
 
 
 if __name__ == '__main__':

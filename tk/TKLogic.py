@@ -20,7 +20,7 @@ class Board():
 
 
 	__additional_components_count = 4
-	shape = (BOARD_SIZE + __additional_components_count,MAX_ARRAY_LEN_OF_ENCODED_PIT_STATE)
+	shape = (BOARD_SIZE + __additional_components_count, MAX_ARRAY_LEN_OF_ENCODED_PIT_STATE)
 	action_size = BOARD_SIZE
 
 	def __init__(self):
@@ -43,21 +43,58 @@ class Board():
 	def __getitem__(self, index): 
 		return self.get_encoded_state()[index]
 
-	def get_encoded_state(self,player=1):
-		pieces = self.__pieces if player == 1 else self.__pieces[::-1]
-		result = data_array_to_one_hot_with_shape(pieces,self.shape)
-		result[BOARD_SIZE]		= number_to_bits_array(self.__players_scores[player],			MAX_ARRAY_LEN_OF_ENCODED_PIT_STATE)
-		result[BOARD_SIZE + 1]	= number_to_bits_array(self.__players_scores[-player],			MAX_ARRAY_LEN_OF_ENCODED_PIT_STATE)
-		result[BOARD_SIZE + 2]	= number_to_onehot(self.__players_tuz[player],					MAX_ARRAY_LEN_OF_ENCODED_PIT_STATE)
-		result[BOARD_SIZE + 3]	= number_to_onehot(self.__players_tuz[-player],					MAX_ARRAY_LEN_OF_ENCODED_PIT_STATE)
+	def get_encoded_state(self,player=1): #TODO: canonical_board_for_opponent_must_be = board * -1
+		pieces = self.__pieces
+		mid=int((len(pieces) + 1) / 2)
+
+		half_shape = (int(self.shape[0]/2),self.shape[1])
+
+		firstHalf = data_array_to_one_hot_with_shape(pieces[:mid],half_shape)
+		firstHalf[WIDTH - 1 + 1] = number_to_bits_array(self.__players_scores[1],			MAX_ARRAY_LEN_OF_ENCODED_PIT_STATE)
+		firstHalf[WIDTH - 1 + 2] = number_to_onehot(self.__players_tuz[1],					MAX_ARRAY_LEN_OF_ENCODED_PIT_STATE)
+
+		secondHalf = data_array_to_one_hot_with_shape(pieces[mid:],half_shape)
+		secondHalf[WIDTH - 1 + 1] = number_to_bits_array(self.__players_scores[-1],			MAX_ARRAY_LEN_OF_ENCODED_PIT_STATE)
+		secondHalf[WIDTH - 1 + 2] = number_to_onehot(self.__players_tuz[-1],				MAX_ARRAY_LEN_OF_ENCODED_PIT_STATE)
+		
+		if player == 1:
+			secondHalf *= -1
+		else:
+			firstHalf *= -1
+
+		result = np.concatenate((firstHalf, secondHalf), axis=0)
+
 		return result
 
 	def set_encoded_state(self,state):
-		self.__pieces 				= one_hot_batch_to_array(state[0:BOARD_SIZE])
-		self.__players_scores[1]	= bits_array_to_number(state[BOARD_SIZE])
-		self.__players_scores[-1]	= bits_array_to_number(state[BOARD_SIZE + 1])
-		self.__players_tuz[1]		= onehot_to_number(state[BOARD_SIZE + 2])
-		self.__players_tuz[-1]		= onehot_to_number(state[BOARD_SIZE + 3])
+		mid=int((len(state) + 1) / 2)
+		firstHalf = state[:mid]
+		secondHalf = state[mid:]
+		firstSum = 0
+		secondSum = 0
+
+		for onehot in firstHalf:
+			firstSum += sum(onehot)
+
+		for onehot in secondHalf:
+			secondSum += sum(onehot)
+
+		if firstSum > 0 or secondSum < 0: # playe 1 in firstHalf
+			pass
+		else: #player -1 in firstHalf
+			firstHalf,secondHalf = secondHalf,firstHalf
+
+		secondHalf *= -1 #at this point second half always contains negative numbers
+
+		HALF_BOARD_SIZE = int(BOARD_SIZE/2)
+
+		self.__pieces 				= one_hot_batch_to_array(firstHalf[:HALF_BOARD_SIZE]) #first half of board
+		self.__players_scores[1]	= bits_array_to_number(firstHalf[HALF_BOARD_SIZE])
+		self.__players_tuz[1]		= onehot_to_number(firstHalf[HALF_BOARD_SIZE + 1])
+
+		self.__pieces 				+= one_hot_batch_to_array(secondHalf[:HALF_BOARD_SIZE]) #second half of board
+		self.__players_scores[-1]	= bits_array_to_number(secondHalf[HALF_BOARD_SIZE])
+		self.__players_tuz[-1]		= onehot_to_number(secondHalf[HALF_BOARD_SIZE + 1])
 
 
 

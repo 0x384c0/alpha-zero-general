@@ -71,13 +71,9 @@ class TKGame(Game):
 
     def getCanonicalForm(self, board, player):
         if player == 1:
-            result = board
+            return board
         else:
-            b = Board()
-            b.set_encoded_state(np.copy(board))
-            result = b.get_encoded_state(-1)
-        debug_print(result)
-        return result
+            return board * -1
 
 
     def getSymmetries(self, board, pi):
@@ -87,8 +83,8 @@ class TKGame(Game):
 
 
     def stringRepresentation(self, board):
-        debug_print(str(board))
-        return str(board)
+        debug_print(board.tostring())
+        return str(board.tostring())
 
 
 def display(board_state):
