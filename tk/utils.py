@@ -2,6 +2,11 @@ import numpy as np
 import os
 
 def data_array_to_one_hot_with_shape(array,shape):
+	if not is_debug_mode():
+		for i,item in enumerate(array):
+			if item >=  shape[1]:
+				array[i] = shape[1] - 1
+
 	token_ids_one_hot = np.zeros((shape[0], shape[1]))
 	token_ids_one_hot[np.arange(len(array)), array] = 1
 	return token_ids_one_hot

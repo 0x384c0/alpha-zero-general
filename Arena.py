@@ -51,26 +51,26 @@ class Arena():
 
             canonical_form = self.game.getCanonicalForm(board, curPlayer)
 
-            canonical_action = players[curPlayer+1](canonical_form)
-            canonical_valids = self.game.getValidMoves(canonical_form,1)
+            action = players[curPlayer+1](canonical_form)
+            valids = self.game.getValidMoves(canonical_form,1)
 
-            if curPlayer == 1:
-                action = canonical_action
-                valids = canonical_valids
-            else:
-                action = len(canonical_valids) - 1 - canonical_action
-                valids = canonical_valids[::-1]
 
-            print("taken action: " + bpurple(action) + "\t of valid actions: " + str(valids))
+            if is_debug_mode():
+                print("taken action: " + bpurple(action) + "\t of valid actions: " + str(valids))
 
             if valids[action]==0:
-                print("len(canonical_valids)")
-                print(len(canonical_valids))
-                print("canonical_action")
-                print(canonical_action)
-                print("canonical_valids")
-                print(canonical_valids)
-                assert valids[action] > 0
+                print(red("WARNING - invalid action"))
+                print("valids")
+                print(valids)
+                print("len(valids)")
+                print(len(valids))
+                print("action")
+                print(action)
+                if is_debug_mode():
+                    assert valids[action] > 0
+                else:
+                    action = valids.index(1)
+
 
             board, curPlayer = self.game.getNextState(board, curPlayer, action)  #TODO: fix missing tuz. tuz exists in valids but missing in valids insid checking in getNextState
         if verbose:
