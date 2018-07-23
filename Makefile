@@ -6,6 +6,7 @@ clean:
 test:
 	export DEBUG_MODE="True"; \
 	cd tk && $(PYTHON) -m test.testTKLogick
+	$(PYTHON) -m tk.test.testTKGame
 
 train:
 	$(PYTHON) main.py

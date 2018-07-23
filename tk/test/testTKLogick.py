@@ -103,6 +103,8 @@ class TestTKLogic(unittest.TestCase):
 		self.assertEqual(self.board.is_win(1),		True)
 
 	def test_execute_move(self):
+		self.assertEqual(parse_encoded_state(self.board.execute_move(0,1)),		[1, 10, 10, 10, 10, 10, 10, 10, 10,		9,  9, 9, 9, 9, 9, 9, 9, 9,				0, 0, None, None])
+		self.setUp()
 		self.assertEqual(parse_encoded_state(self.board.execute_move(1,1)),		[9, 1, 10, 10, 10, 10, 10, 10, 10,		0,  9, 9, 9, 9, 9, 9, 9, 9,				10, 0, None, None])
 		self.setUp()
 		self.assertEqual(parse_encoded_state(self.board.execute_move(9,-1)),	[9, 9, 9, 9, 9, 9, 9, 9, 9,				1, 10, 10, 10, 10, 10, 10, 10, 10,		0, 0, None, None])
@@ -159,6 +161,25 @@ class TestTKLogic(unittest.TestCase):
 		self.board.set_encoded_state(canonical_board_for_other_player)
 		self.assertEqual(parse_encoded_state( canonical_board_for_player),parse_encoded_state(self.board.get_encoded_state(-1)))
 
+		state_enc = generate_encoded_state(state)
+		self.board.set_encoded_state(state_enc)
+		state1 = parse_encoded_state(self.board.get_encoded_state())
+		
+		self.board.set_encoded_state(state_enc)
+		state2 = parse_encoded_state(self.board.get_encoded_state())
+
+		self.assertEqual(state1,state2)
+
+	def testDisplay(self):
+
+		state = 	generate_encoded_state([9, 9, 9, 9, 1, 9, 9, 9, 9,		9, 9, 9, 9, 9, 9, 9, 9, 9,		1,16,		1,None])
+		
+		self.board.set_encoded_state(state)
+		str1 = self.board.display()
+		
+		self.board.set_encoded_state(state)
+		str2 = self.board.display()
+		self.assertEqual(str1,str2)
 
 if __name__ == '__main__':
     unittest.main()

@@ -49,6 +49,7 @@ class Arena():
                 print("\n --- Turn", str(it), player_descr)
                 self.display(board)
 
+
             canonical_form = self.game.getCanonicalForm(board, curPlayer)
 
             action = players[curPlayer+1](canonical_form)
@@ -69,10 +70,10 @@ class Arena():
                 if is_debug_mode():
                     assert valids[action] > 0
                 else:
-                    action = valids.index(1)
+                    action = valids.tolist().index(1)
 
 
-            board, curPlayer = self.game.getNextState(board, curPlayer, action)  #TODO: fix missing tuz. tuz exists in valids but missing in valids insid checking in getNextState
+            board, curPlayer = self.game.getNextState(board, curPlayer, action)
         if verbose:
             assert(self.display)
             print("Game over: Turn ", str(it), "Result ", str(self.game.getGameEnded(board, 1)))
