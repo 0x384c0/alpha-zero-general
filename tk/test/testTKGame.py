@@ -11,20 +11,15 @@ from utils import *
 
 class TestTKGame(unittest.TestCase):
 	def setUp(self):
+		self.game = Game()
 		self.board = Board()
 		self.display = display
 
 	def tearDown(self):
 		self.board = None
 
-	def testDsiaplay(self):
-		board = self.board.get_encoded_state()
-		strBoard1 = str(board)
-		self.display(board)
-		
-		strBoard2 = str(board)
-		self.display(board)
-		self.assertEqual(strBoard1, strBoard2)
+	def testGetValidMoves(self):
+		self.assertEqual(self.game.getValidMoves(self.board.get_encoded_state(),1).tolist(), [1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0])
 
 
 if __name__ == '__main__':

@@ -67,6 +67,7 @@ class Board():
 		return result
 
 	def set_encoded_state(self,state):
+		state = state.copy()
 		mid=int((len(state) + 1) / 2)
 		firstHalf = state[:mid]
 		secondHalf = state[mid:]

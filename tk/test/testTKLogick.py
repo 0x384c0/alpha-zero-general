@@ -162,12 +162,16 @@ class TestTKLogic(unittest.TestCase):
 		self.assertEqual(parse_encoded_state( canonical_board_for_player),parse_encoded_state(self.board.get_encoded_state(-1)))
 
 		state_enc = generate_encoded_state(state)
+		state_enc_str_1 = str(state_enc)
+
 		self.board.set_encoded_state(state_enc)
+		state_enc_str_2 = str(state_enc)
 		state1 = parse_encoded_state(self.board.get_encoded_state())
 		
 		self.board.set_encoded_state(state_enc)
 		state2 = parse_encoded_state(self.board.get_encoded_state())
 
+		self.assertEqual(state_enc_str_1,state_enc_str_2)
 		self.assertEqual(state1,state2)
 
 	def testDisplay(self):
