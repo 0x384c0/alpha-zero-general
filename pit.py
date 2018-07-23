@@ -46,5 +46,5 @@ descriptions = {
 
 arena = Arena.Arena(n1p, rp, g, display=display)
 arena.descriptions = descriptions
-result = arena.playGames(4, verbose=True)
+result = arena.playGames(2, verbose=True)
 print("oneWon: " + str(result[0]) + " twoWon (neural network): " + str(result[1]) + " draw: " + str(result[2]))

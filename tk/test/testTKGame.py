@@ -18,8 +18,18 @@ class TestTKGame(unittest.TestCase):
 	def tearDown(self):
 		self.board = None
 
-	def testGetValidMoves(self):
-		self.assertEqual(self.game.getValidMoves(self.board.get_encoded_state(),1).tolist(), [1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0])
+	def testCanonicalForm(self):
+
+		board = self.board.execute_move(0, 1)
+		
+		canonical_form_p1 = self.game.getCanonicalForm(board, 1)
+		valids_p1 = self.game.getValidMoves(canonical_form_p1,1)
+		self.assertEqual(valids_p1.tolist(), [1, 1, 1, 1, 1, 1, 1, 1, 1,	0, 0, 0, 0, 0, 0, 0, 0, 0])
+
+		canonical_form_p2 = self.game.getCanonicalForm(board, -1)
+		valids_p2 = self.game.getValidMoves(canonical_form_p2,1)
+
+		self.assertEqual(valids_p2.tolist(), [0, 0, 0, 0, 0, 0, 0, 0, 0,	1, 1, 1, 1, 1, 1, 1, 1, 1])
 
 
 if __name__ == '__main__':

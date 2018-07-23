@@ -60,7 +60,7 @@ class Arena():
                 print("taken action: " + bpurple(action) + "\t of valid actions: " + str(valids))
 
             if valids[action]==0:
-                print(red("WARNING - invalid action"))
+                print(red("WARNING - Arena.playGame invalid action"))
                 print("valids")
                 print(valids)
                 print("len(valids)")

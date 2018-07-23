@@ -36,6 +36,7 @@ class Board():
 			1	:	None,	# player 1
 			-1	:	None	# player -1
 		}
+		self.__canonical_player = 1
 
 
 
@@ -57,7 +58,7 @@ class Board():
 		secondHalf[WIDTH - 1 + 1] = number_to_bits_array(self.__players_scores[-1],			MAX_ARRAY_LEN_OF_ENCODED_PIT_STATE)
 		secondHalf[WIDTH - 1 + 2] = number_to_onehot(self.__players_tuz[-1],				MAX_ARRAY_LEN_OF_ENCODED_PIT_STATE)
 		
-		if player == 1:
+		if player * self.__canonical_player == 1:
 			secondHalf *= -1
 		else:
 			firstHalf *= -1
@@ -81,11 +82,11 @@ class Board():
 			secondSum += sum(onehot)
 
 		if firstSum > 0 or secondSum < 0: # playe 1 in firstHalf
-			pass
+			secondHalf *= -1
 		else: #player -1 in firstHalf
-			firstHalf,secondHalf = secondHalf,firstHalf
+			self.__canonical_player = -1
+			firstHalf *= -1
 
-		secondHalf *= -1 #at this point second half always contains negative numbers
 
 		HALF_BOARD_SIZE = int(BOARD_SIZE/2)
 
@@ -100,12 +101,14 @@ class Board():
 
 
 	def get_legal_moves(self, player):
+		player = player * self.__canonical_player
 		return self.__generate_valid_moves(player)
 
 	def has_legal_moves(self):
 		return self.__generate_valid_moves(1).count(1) != 0 and self.__generate_valid_moves(-1).count(1) != 0
 
 	def is_win(self, player):
+		player = player * self.__canonical_player
 		#Победа в игре достигается двумя способами:
 
 		#набор в свой казан 82 коргоола или более
@@ -119,10 +122,12 @@ class Board():
 		return False
 
 	def execute_move(self, move, player):
+		player = player * self.__canonical_player
 		#check valid moves
 		if is_debug_mode():
 			valids = self.__generate_valid_moves(player)
-			if valids[move] == 0: #TODO: fix missing 
+			if valids[move] == 0: #TODO: fix missing
+				print(red("WARNING - Board.execute_move invalid action"))
 				print("self.__pieces")
 				print(self.__pieces)
 				print("self.__players_tuz")
@@ -247,14 +252,18 @@ class Board():
 		str_pieces = []
 		green_valids = self.__generate_valid_moves(1) #valids for green
 		red_valids = self.__generate_valid_moves(-1) #valids for red
+
+		canonicalPlayer1Color = green if self.__canonical_player == 1 else red
+		canonicalPlayer2Color = red if self.__canonical_player == 1 else green
+
 		for counter, value in enumerate( self.__pieces):
 			if green_valids[counter] == 1:
-				str_pieces.append(green(value))
+				str_pieces.append(canonicalPlayer1Color(value))
 			elif red_valids[counter] == 1:
-				str_pieces.append(red(value))
+				str_pieces.append(canonicalPlayer2Color(value))
 			else:
 				str_pieces.append(str(value))
-		return "pieces: " + "\t".join(str_pieces) + "\tscores: " + green("p1 - " + str(self.__players_scores[1])) + red(" p-1 - " + str(self.__players_scores[-1])) + " tuz: " + green("p1 - " + str(self.__players_tuz[1])) + red(" p-1 - " + str(self.__players_tuz[-1]))
+		return "pieces: " + "\t".join(str_pieces) + "\tscores: " + canonicalPlayer1Color("p1 - " + str(self.__players_scores[1])) + canonicalPlayer2Color(" p-1 - " + str(self.__players_scores[-1])) + " tuz: " + canonicalPlayer1Color("p1 - " + str(self.__players_tuz[1])) + canonicalPlayer2Color(" p-1 - " + str(self.__players_tuz[-1]))
 
 #for tests
 	def set_pieces(self,pieces):
