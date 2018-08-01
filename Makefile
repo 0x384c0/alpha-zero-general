@@ -12,5 +12,6 @@ train:
 	$(PYTHON) main.py
 
 play:
-	export DEBUG_MODE="True"; \
 	$(PYTHON) pit.py
+	# export DEBUG_MODE="True"; \
+	# $(PYTHON) pit.py
