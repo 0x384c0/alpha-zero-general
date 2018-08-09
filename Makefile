@@ -1,5 +1,6 @@
 PYTHON=python3
 GPU_MODE="False" # run "make setup-gpu" before setting to True
+NUMBER_OF_TRAIN_ITERATIONS=1
 
 setup:
 	pip install -r requirements.txt
@@ -9,7 +10,7 @@ setup-gpu:
 	pip uninstall tensorflow
 	pip install tensorflow-gpu
 	pip install -r requirements.txt
-	echo "Now set GPU_MODE to \"False\" in MakeFile"
+	echo "Now set GPU_MODE to \"True\" in MakeFile"
 
 clean:
 	rm -rf temp
@@ -20,15 +21,14 @@ test:
 	$(PYTHON) -m tk.test.testTKGame
 
 train:
-	export DEBUG_MODE=$(GPU_MODE); \
+	export GPU_MODE=$(GPU_MODE); \
 	$(PYTHON) main.py
 
 play:
-	# export DEBUG_MODE="True"; \
-	export DEBUG_MODE=$(GPU_MODE); \
+	export GPU_MODE=$(GPU_MODE); \
 	$(PYTHON) pit.py
 
 play_with_himan:
-	export DEBUG_MODE=$(GPU_MODE); \
+	export GPU_MODE=$(GPU_MODE); \
 	export PLAY_WITH_HUMAN="True"; \
 	$(PYTHON) pit.py

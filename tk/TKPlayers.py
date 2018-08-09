@@ -1,4 +1,5 @@
 import numpy as np
+from utils import *
 
 class RandomPlayer():
     def __init__(self, game):
@@ -18,28 +19,33 @@ class HumanTKPlayer():
 
     def play(self, board):
         valid = self.game.getValidMoves(board, 1)
+        print("valid?\t" + '\t'.join(map(int_to_bool_string, valid)))
+        print("number\t" + '\t'.join(map(str, range(len(valid)))))
+        print("Enter any number of valid action, marked " + int_to_bool_string(1) + ":")
         print("\n")
-        print('\t'.join(map(int_to_bool_string, valid)))
-        print('\t'.join(map(str, range(len(valid)))))
-        print("\n")
-        exit()
-        for i in range(len(valid)):
-            if valid[i]:
-                print(int(i/self.game.n), int(i%self.game.n))
+
+
+        action_number = None
         while True: 
-            # Python 3.x
             a = input()
-            # Python 2.x 
-            # a = raw_input()
+            try:
+                action_number = int(a)
+            except ValueError:
+                print(red("Error: Not a number"))
+                continue
 
-            x,y = [int(x) for x in a.split(' ')]
-            a = self.game.n * x + y if x!= -1 else self.game.n ** 2
-            if valid[a]:
-                break
-            else:
-                print('Invalid')
+            if action_number < 0 or action_number > len(valid):
+                print(str(action_number) + ' is out of range')
+                continue
 
-        return a
+            if valid[action_number] == 0:
+                print(str(action_number) + ' is invalid action')
+                continue
+
+            print("Selected action is: " + green(action_number))
+            break
+
+        return action_number
 
 
 def int_to_bool_string(int):
