@@ -43,8 +43,10 @@ descriptions = {
 #args2 = dotdict({'numMCTSSims': 25, 'cpuct':1.0})
 #mcts2 = MCTS(g, n2, args2)
 #n2p = lambda x: np.argmax(mcts2.getActionProb(x, temp=0))
+isPlayWithHuman = os.getenv('PLAY_WITH_HUMAN', "False") == "True"
+oppenentOfNN = hp if isPlayWithHuman else rp
 
-arena = Arena.Arena(n1p, rp, g, display=display)
+arena = Arena.Arena(n1p, oppenentOfNN, g, display=display)
 arena.descriptions = descriptions
 result = arena.playGames(20, verbose=True)
 print("oneWon (neural network): " + str(result[0]) + " twoWon: " + str(result[1]) + " draw: " + str(result[2]))

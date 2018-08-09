@@ -57,7 +57,10 @@ def is_debug_mode():
 	global is_debug_mode_result
 	if is_debug_mode_result == None:
 		is_debug_mode_result = os.getenv('DEBUG_MODE', "False")
-	return os.getenv('DEBUG_MODE', "False") == "True"
+	return is_debug_mode_result == "True"
+
+def is_gpu_mode():
+	return os.getenv('GPU_MODE', "False") == "True"
 
 
 

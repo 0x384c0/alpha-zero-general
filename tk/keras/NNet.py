@@ -18,7 +18,7 @@ args = dotdict({
     'dropout': 0.3,
     'epochs': 8,
     'batch_size': 64,
-    'cuda': False,
+    'cuda': is_gpu_mode(),
     'num_channels': 128,
 })
 
