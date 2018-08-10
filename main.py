@@ -10,7 +10,7 @@ from tk.keras.NNet import NNetWrapper as nn
 from utils import *
 
 args = dotdict({
-    'numIters': 1,#1000,
+    'numIters': number_of_train_iterations(),#1000,
     'numEps': 100,
     'tempThreshold': 15,
     'updateThreshold': 0.6,

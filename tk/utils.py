@@ -52,6 +52,7 @@ def bits_array_to_number(array):
 	array = list(map(lambda x: int(x),array[-8:]))
 	return np.packbits(array)[0]
 
+# env vraiables
 is_debug_mode_result = None
 def is_debug_mode():
 	global is_debug_mode_result
@@ -62,8 +63,12 @@ def is_debug_mode():
 def is_gpu_mode():
 	return os.getenv('GPU_MODE', "False") == "True"
 
+def number_of_train_iterations():
+	stringNum = os.getenv('NUMBER_OF_TRAIN_ITERATIONS', "3")
+	return int(stringNum)
 
 
+# string coloring
 def red(obj):
 	return "\033[31m"+ str(obj) + "\033[0m"
 

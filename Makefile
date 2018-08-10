@@ -21,8 +21,12 @@ test:
 	$(PYTHON) -m tk.test.testTKGame
 
 train:
+	export NUMBER_OF_TRAIN_ITERATIONS=$(NUMBER_OF_TRAIN_ITERATIONS); \
 	export GPU_MODE=$(GPU_MODE); \
 	$(PYTHON) main.py
+
+cpulimit:
+	sleep 1 && cpulimit -p $$(pgrep "Python") -l 200
 
 play:
 	export GPU_MODE=$(GPU_MODE); \
