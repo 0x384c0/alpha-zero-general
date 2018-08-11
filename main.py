@@ -1,5 +1,6 @@
 from Coach import Coach
 import os
+import datetime
 
 # from tictactoe.TicTacToeGame import TicTacToeGame as Game
 # from tictactoe.keras.NNet import NNetWrapper as nn
@@ -32,6 +33,8 @@ def is_can_load_checkpoint(args):
     return os.path.exists(filepath) and args.load_model
 
 if __name__=="__main__":
+    print("START DATE: " + str(datetime.datetime.now()))
+
     # g = Game(3)
     g = Game()
     nnet = nn(g)
@@ -46,3 +49,5 @@ if __name__=="__main__":
         print("Load trainExamples from file")
         c.loadTrainExamples()
     c.learn()
+    
+    print("END DATE: " + str(datetime.datetime.now()))

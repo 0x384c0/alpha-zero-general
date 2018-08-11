@@ -3,15 +3,25 @@
 from utils import *
 import numpy as np
 
+
 WIDTH = 9
 HEIGHT = 2
 
 INIT_BALLS_COUNT_IN_PIT = 9
 
-MAX_ARRAY_LEN_OF_ENCODED_PIT_STATE = 40 # TODO: find rignt value
+MAX_ARRAY_LEN_OF_ENCODED_PIT_STATE = 40 # TODO: find rignt value , minimum muste be 9, beasue of onehot tuz encoding
 BOARD_SIZE =  WIDTH * HEIGHT
 WIN_SCORE = (BOARD_SIZE * WIDTH)/HEIGHT
 
+
+PIT_STATE_ENCODER = array_to_bits_batch_with_shape # data_array_to_one_hot_with_shape
+PIT_STATE_DECODER = bits_batch_to_array # one_hot_batch_to_array
+
+SCORE_ENCODER = number_to_bits_array
+SCORE_DECODER = bits_array_to_number
+
+TUZ_ENCODER = number_to_bits_array # number_to_onehot
+TUZ_DECODER = bits_array_to_number # onehot_to_number
 
 # 0-9 	- player 1		green
 # 10-18 - player -1		red
@@ -50,13 +60,13 @@ class Board():
 
 		half_shape = (int(self.shape[0]/2),self.shape[1])
 
-		firstHalf = data_array_to_one_hot_with_shape(pieces[:mid],half_shape)
-		firstHalf[WIDTH - 1 + 1] = number_to_bits_array(self.__players_scores[1],			MAX_ARRAY_LEN_OF_ENCODED_PIT_STATE)
-		firstHalf[WIDTH - 1 + 2] = number_to_onehot(self.__players_tuz[1],					MAX_ARRAY_LEN_OF_ENCODED_PIT_STATE)
+		firstHalf = PIT_STATE_ENCODER(pieces[:mid],half_shape)
+		firstHalf[WIDTH - 1 + 1] = SCORE_ENCODER(self.__players_scores[1],			MAX_ARRAY_LEN_OF_ENCODED_PIT_STATE)
+		firstHalf[WIDTH - 1 + 2] = TUZ_ENCODER(self.__players_tuz[1],					MAX_ARRAY_LEN_OF_ENCODED_PIT_STATE)
 
-		secondHalf = data_array_to_one_hot_with_shape(pieces[mid:],half_shape)
-		secondHalf[WIDTH - 1 + 1] = number_to_bits_array(self.__players_scores[-1],			MAX_ARRAY_LEN_OF_ENCODED_PIT_STATE)
-		secondHalf[WIDTH - 1 + 2] = number_to_onehot(self.__players_tuz[-1],				MAX_ARRAY_LEN_OF_ENCODED_PIT_STATE)
+		secondHalf = PIT_STATE_ENCODER(pieces[mid:],half_shape)
+		secondHalf[WIDTH - 1 + 1] = SCORE_ENCODER(self.__players_scores[-1],			MAX_ARRAY_LEN_OF_ENCODED_PIT_STATE)
+		secondHalf[WIDTH - 1 + 2] = TUZ_ENCODER(self.__players_tuz[-1],				MAX_ARRAY_LEN_OF_ENCODED_PIT_STATE)
 		
 		if player * self.__canonical_player == 1:
 			secondHalf *= -1
@@ -90,13 +100,15 @@ class Board():
 
 		HALF_BOARD_SIZE = int(BOARD_SIZE/2)
 
-		self.__pieces 				= one_hot_batch_to_array(firstHalf[:HALF_BOARD_SIZE]) #first half of board
-		self.__players_scores[1]	= bits_array_to_number(firstHalf[HALF_BOARD_SIZE])
-		self.__players_tuz[1]		= onehot_to_number(firstHalf[HALF_BOARD_SIZE + 1])
+		#first half of board
+		self.__pieces 				= PIT_STATE_DECODER(firstHalf[:HALF_BOARD_SIZE]) # pit states
+		self.__players_scores[1]	= SCORE_DECODER(firstHalf[HALF_BOARD_SIZE]) # score
+		self.__players_tuz[1]		= TUZ_DECODER(firstHalf[HALF_BOARD_SIZE + 1]) # tuz position
 
-		self.__pieces 				+= one_hot_batch_to_array(secondHalf[:HALF_BOARD_SIZE]) #second half of board
-		self.__players_scores[-1]	= bits_array_to_number(secondHalf[HALF_BOARD_SIZE])
-		self.__players_tuz[-1]		= onehot_to_number(secondHalf[HALF_BOARD_SIZE + 1])
+		#second half of board
+		self.__pieces 				+= PIT_STATE_DECODER(secondHalf[:HALF_BOARD_SIZE]) # pit states 
+		self.__players_scores[-1]	= SCORE_DECODER(secondHalf[HALF_BOARD_SIZE]) # score
+		self.__players_tuz[-1]		= TUZ_DECODER(secondHalf[HALF_BOARD_SIZE + 1]) # tuz position
 
 
 

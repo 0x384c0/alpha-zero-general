@@ -5,26 +5,20 @@ sys.path.append('..')
 
 from TKLogic import Board
 from TKLogic import MAX_ARRAY_LEN_OF_ENCODED_PIT_STATE, BOARD_SIZE, WIN_SCORE
+from TKLogic import PIT_STATE_ENCODER, PIT_STATE_DECODER, SCORE_ENCODER, SCORE_DECODER, TUZ_ENCODER, TUZ_DECODER
 from utils import *
 
 def generate_encoded_state(state):
-	result = data_array_to_one_hot(state[0:18],				MAX_ARRAY_LEN_OF_ENCODED_PIT_STATE) #TODO: remove
-	result.append(number_to_bits_array(state[18],		MAX_ARRAY_LEN_OF_ENCODED_PIT_STATE))
-	result.append(number_to_bits_array(state[19],		MAX_ARRAY_LEN_OF_ENCODED_PIT_STATE))
-	result.append(number_to_onehot(state[20],			MAX_ARRAY_LEN_OF_ENCODED_PIT_STATE))
-	result.append(number_to_onehot(state[21],			MAX_ARRAY_LEN_OF_ENCODED_PIT_STATE))
-
-
 	pieces = state[0:18]
 	mid=int((len(pieces) + 1) / 2)
 
-	firstHalf = data_array_to_one_hot_with_shape(pieces[:mid],		(11,MAX_ARRAY_LEN_OF_ENCODED_PIT_STATE))
-	firstHalf[9] = number_to_bits_array(state[18],				MAX_ARRAY_LEN_OF_ENCODED_PIT_STATE)
-	firstHalf[10] = number_to_onehot(state[20],					MAX_ARRAY_LEN_OF_ENCODED_PIT_STATE)
+	firstHalf = PIT_STATE_ENCODER(pieces[:mid],		(11,MAX_ARRAY_LEN_OF_ENCODED_PIT_STATE))
+	firstHalf[9] = SCORE_ENCODER(state[18],				MAX_ARRAY_LEN_OF_ENCODED_PIT_STATE)
+	firstHalf[10] = TUZ_ENCODER(state[20],					MAX_ARRAY_LEN_OF_ENCODED_PIT_STATE)
 
-	secondHalf = data_array_to_one_hot_with_shape(pieces[mid:],		(11,MAX_ARRAY_LEN_OF_ENCODED_PIT_STATE))
-	secondHalf[9] = number_to_bits_array(state[19],				MAX_ARRAY_LEN_OF_ENCODED_PIT_STATE)
-	secondHalf[10] = number_to_onehot(state[21],				MAX_ARRAY_LEN_OF_ENCODED_PIT_STATE)
+	secondHalf = PIT_STATE_ENCODER(pieces[mid:],		(11,MAX_ARRAY_LEN_OF_ENCODED_PIT_STATE))
+	secondHalf[9] = SCORE_ENCODER(state[19],				MAX_ARRAY_LEN_OF_ENCODED_PIT_STATE)
+	secondHalf[10] = TUZ_ENCODER(state[21],				MAX_ARRAY_LEN_OF_ENCODED_PIT_STATE)
 
 	secondHalf *= -1
 
@@ -58,13 +52,13 @@ def parse_encoded_state(state):
 
 
 
-	result =		one_hot_batch_to_array(firstHalf[:HALF_BOARD_SIZE])
-	result +=		one_hot_batch_to_array(secondHalf[:HALF_BOARD_SIZE])
+	result =		PIT_STATE_DECODER(firstHalf[:HALF_BOARD_SIZE])
+	result +=		PIT_STATE_DECODER(secondHalf[:HALF_BOARD_SIZE])
 
-	result.append(bits_array_to_number(firstHalf[HALF_BOARD_SIZE]))
-	result.append(bits_array_to_number(secondHalf[HALF_BOARD_SIZE]))
-	result.append(onehot_to_number(firstHalf[HALF_BOARD_SIZE + 1]))
-	result.append(onehot_to_number(secondHalf[HALF_BOARD_SIZE + 1]))
+	result.append(SCORE_DECODER(firstHalf[HALF_BOARD_SIZE]))
+	result.append(SCORE_DECODER(secondHalf[HALF_BOARD_SIZE]))
+	result.append(TUZ_DECODER(firstHalf[HALF_BOARD_SIZE + 1]))
+	result.append(TUZ_DECODER(secondHalf[HALF_BOARD_SIZE + 1]))
 	return result
 
 
@@ -185,5 +179,9 @@ class TestTKLogic(unittest.TestCase):
 		str2 = self.board.display()
 		self.assertEqual(str1,str2)
 
+
+
 if __name__ == '__main__':
-    unittest.main()
+	# import cProfile
+	# cProfile.run("unittest.main()")
+	unittest.main()
