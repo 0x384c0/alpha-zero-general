@@ -86,7 +86,7 @@ def is_gpu_mode():
 	return os.getenv('GPU_MODE', "False") == "True"
 
 def number_of_train_iterations():
-	stringNum = os.getenv('NUMBER_OF_TRAIN_ITERATIONS', "3")
+	stringNum = os.getenv('NUMBER_OF_TRAIN_ITERATIONS', "1")
 	return int(stringNum)
 
 

@@ -9,7 +9,7 @@ HEIGHT = 2
 
 INIT_BALLS_COUNT_IN_PIT = 9
 
-MAX_ARRAY_LEN_OF_ENCODED_PIT_STATE = 40 # TODO: find rignt value , minimum muste be 9, beasue of onehot tuz encoding
+MAX_ARRAY_LEN_OF_ENCODED_PIT_STATE = 8 # TODO: find rignt value , minimum muste be 9 if tun encoding is onehot
 BOARD_SIZE =  WIDTH * HEIGHT
 WIN_SCORE = (BOARD_SIZE * WIDTH)/HEIGHT
 
