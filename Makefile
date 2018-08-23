@@ -1,6 +1,6 @@
-PYTHON=python3
-GPU_MODE="False" # run "make setup-gpu" before setting to True
-NUMBER_OF_TRAIN_ITERATIONS=5
+PYTHON=python
+GPU_MODE="True" # run "make setup-gpu" before setting to True
+NUMBER_OF_TRAIN_ITERATIONS=8
 
 setup:
 	pip install -r requirements.txt
