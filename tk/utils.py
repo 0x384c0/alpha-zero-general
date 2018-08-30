@@ -89,6 +89,9 @@ def number_of_train_iterations():
 	stringNum = os.getenv('NUMBER_OF_TRAIN_ITERATIONS', "1")
 	return int(stringNum)
 
+def num_MCTS_sims():
+	stringNum = os.getenv('NUMBER_OF_MCTS_SIMULATIONS', "50")
+	return int(stringNum)
 
 # string coloring
 def red(obj):

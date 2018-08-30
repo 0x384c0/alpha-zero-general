@@ -19,7 +19,7 @@ args = dotdict({
     'epochs': 10,
     'batch_size': 64,
     'cuda': is_gpu_mode(),
-    'num_channels': 512,
+    'num_channels': 256,
 })
 
 class NNetWrapper(NeuralNet):
@@ -69,3 +69,4 @@ class NNetWrapper(NeuralNet):
         if not os.path.exists(filepath):
             raise("No model in path '{}'".format(filepath))
         self.nnet.model.load_weights(filepath)
+        print("Loaded model weights from " + str(filepath))

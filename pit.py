@@ -29,7 +29,7 @@ hp = HumanTKPlayer(g).play
 n1 = NNet(g)
 # n1.load_checkpoint('./pretrained_models/tictactoe/keras/','best.pth.tar')
 n1.load_checkpoint('temp/','best.pth.tar')
-args1 = dotdict({'numMCTSSims': 50, 'cpuct':1.0})
+args1 = dotdict({'numMCTSSims': num_MCTS_sims(), 'cpuct':1.0})
 mcts1 = MCTS(g, n1, args1)
 n1p = lambda x: np.argmax(mcts1.getActionProb(x, temp=0))
 
@@ -48,5 +48,9 @@ oppenentOfNN = hp if isPlayWithHuman else rp
 
 arena = Arena.Arena(n1p, oppenentOfNN, g, display=display)
 arena.descriptions = descriptions
-result = arena.playGames(20, verbose=True)
-print("oneWon (neural network): " + str(result[0]) + " twoWon: " + str(result[1]) + " draw: " + str(result[2]))
+result = arena.playGames(10, verbose=True)
+print("------------------")
+print("oneWon (neural network):	" + green(result[0]))
+print("twoWon:					" + red(result[1]))
+print("draw:					" + str(result[2]))
+print("------------------")

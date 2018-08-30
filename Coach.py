@@ -148,9 +148,10 @@ class Coach():
         examplesFile = modelFile+".examples"
         if not os.path.isfile(examplesFile):
             print(examplesFile)
-            r = input("File with trainExamples not found. Continue? [y|n]")
-            if r != "y":
-                sys.exit()
+            print("File with trainExamples not found.")
+            # r = input("File with trainExamples not found. Continue? [y|n]")
+            # if r != "y":
+            #     sys.exit()
         else:
             print("File with trainExamples found. Read it.")
             with open(examplesFile, "rb") as f:

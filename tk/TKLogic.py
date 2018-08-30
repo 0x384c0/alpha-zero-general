@@ -188,11 +188,8 @@ class Board():
 			self.__players_scores[player] += game_state[last_pit_looped]
 			game_state[last_pit_looped] = 0
 
-		opponents_last_pit = WIDTH - 1 if player == 1 else WIDTH / 2 - 1
-		if self.__players_tuz[-player] != None:
-			opponents_tuz = self.__players_tuz[-player] - WIDTH / 2 if  player == 1 else self.__players_tuz[-player] + WIDTH / 2
-		else:
-			opponents_tuz = None
+		opponents_last_pit = BOARD_SIZE - 1 if player == 1 else BOARD_SIZE / HEIGHT - 1
+		opponents_tuz = self.__players_tuz[-player]
 
 		#Если при ходе игрока А последний коргоол попадает в дом игрока Б и в нём после этого оказывается три коргоола, то этот дом объявляется тузом игрока А 
 		# 1) игрок не может завести себе туз в самом последнем (девятом) доме соперника,
@@ -200,9 +197,9 @@ class Board():
 		# 3) каждый игрок в течение игры может завести себе только один туз.
 		if (self.__is_pit_dont_belongs_to_player(last_pit_looped,player)	and
 			game_state[last_pit_looped]		== 3							and
-			move 							!= opponents_last_pit			and
-			last_pit_looped 				!= opponents_tuz				and
-			self.__players_tuz[player]		== None):
+			last_pit_looped 				!= opponents_last_pit			and # 1)
+			last_pit_looped 				!= opponents_tuz				and # 2)
+			self.__players_tuz[player]		== None):							# 3)
 			#Эти три коргоола попадают в казан игрока
 			self.__players_scores[player] += game_state[last_pit_looped]
 			game_state[last_pit_looped] = 0
