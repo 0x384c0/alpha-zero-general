@@ -48,7 +48,7 @@ oppenentOfNN = hp if isPlayWithHuman else rp
 
 arena = Arena.Arena(n1p, oppenentOfNN, g, display=display)
 arena.descriptions = descriptions
-result = arena.playGames(10, verbose=True)
+result = arena.playGames(40, verbose=True)
 print("------------------")
 print("oneWon (neural network):	" + green(result[0]))
 print("twoWon:					" + red(result[1]))

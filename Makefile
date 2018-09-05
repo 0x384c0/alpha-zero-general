@@ -3,6 +3,7 @@ GPU_MODE="True" # run "make setup-gpu" before setting to True
 NUMBER_OF_TRAIN_ITERATIONS=1
 NUMBER_OF_MCTS_SIMULATIONS=100
 
+# utils
 setup:
 	pip install -r requirements.txt
 
@@ -18,9 +19,10 @@ clean:
 
 test:
 	export DEBUG_MODE="True"; \
-	cd tk && $(PYTHON) -m test.testTKLogick
+	$(PYTHON) -m tk.test.testTKLogick; \
 	$(PYTHON) -m tk.test.testTKGame
 
+# nn
 train:
 	export NUMBER_OF_TRAIN_ITERATIONS=$(NUMBER_OF_TRAIN_ITERATIONS); \
 	export NUMBER_OF_MCTS_SIMULATIONS=$(NUMBER_OF_MCTS_SIMULATIONS); \
@@ -41,3 +43,16 @@ play_with_himan:
 	export NUMBER_OF_MCTS_SIMULATIONS=$(NUMBER_OF_MCTS_SIMULATIONS); \
 	export GPU_MODE=$(GPU_MODE); \
 	$(PYTHON) pit.py
+
+# api
+start_server:
+	export DEBUG_MODE="False"; \
+	export NUMBER_OF_MCTS_SIMULATIONS=$(NUMBER_OF_MCTS_SIMULATIONS); \
+	export GPU_MODE="False"; \
+	$(PYTHON) rest_api.py
+
+test_server:
+	curl --header "Content-Type: application/json" \
+	--request POST \
+	--data '{"board_state": [9, 9, 9, 9, 9, 9, 9, 9, 9,    9, 9, 9, 9, 9, 9, 9, 9, 9], "players_scores":[0, 0], "players_tuz":[null,null], "player":1}' \
+	"http://localhost:5000/api/predict/"

@@ -10,3 +10,6 @@ tensorflow>=1.0.1
 
 # Neural net and related libraries.
 keras==2.0.5
+
+# api
+flask==1.0.2

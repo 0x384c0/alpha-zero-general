@@ -3,9 +3,9 @@ import unittest
 import sys
 sys.path.append('..')
 
-from TKLogic import Board
-from TKLogic import MAX_ARRAY_LEN_OF_ENCODED_PIT_STATE, BOARD_SIZE, WIN_SCORE
-from TKLogic import PIT_STATE_ENCODER, PIT_STATE_DECODER, SCORE_ENCODER, SCORE_DECODER, TUZ_ENCODER, TUZ_DECODER
+from ..TKLogic import Board
+from ..TKLogic import MAX_ARRAY_LEN_OF_ENCODED_PIT_STATE, BOARD_SIZE, WIN_SCORE
+from ..TKLogic import PIT_STATE_ENCODER, PIT_STATE_DECODER, SCORE_ENCODER, SCORE_DECODER, TUZ_ENCODER, TUZ_DECODER
 from utils import *
 
 def generate_encoded_state(state):
