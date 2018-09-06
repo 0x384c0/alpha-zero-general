@@ -3,6 +3,10 @@ GPU_MODE="True" # run "make setup-gpu" before setting to True
 NUMBER_OF_TRAIN_ITERATIONS=1
 NUMBER_OF_MCTS_SIMULATIONS=100
 
+all:
+	$(MAKE) docker_build
+	$(MAKE) docker_start
+
 # utils
 setup:
 	pip install -r requirements.txt
@@ -46,13 +50,23 @@ play_with_himan:
 
 # api
 start_server:
-	export DEBUG_MODE="False"; \
 	export NUMBER_OF_MCTS_SIMULATIONS=$(NUMBER_OF_MCTS_SIMULATIONS); \
-	export GPU_MODE="False"; \
-	$(PYTHON) rest_api.py
+	$(PYTHON)  rest_api.py
 
 test_server:
 	curl --header "Content-Type: application/json" \
 	--request POST \
 	--data '{"board_state": [9, 9, 9, 9, 9, 9, 9, 9, 9,    9, 9, 9, 9, 9, 9, 9, 9, 9], "players_scores":[0, 0], "players_tuz":[null,null], "player":1}' \
 	"http://localhost:5000/api/predict/"
+
+# docker
+IMAGE_TAG="alpha_zero_general"
+CONTAINER_NAME="alpha_zero_general_5000"
+docker_build:
+	docker rm $(CONTAINER_NAME) || true
+	docker rmi --no-prune $(IMAGE_TAG) || true
+	docker build -t $(IMAGE_TAG)  --build-arg CACHEBUST=$$(date +%s) .
+	docker create  -it -p 5000:5000 --name $(CONTAINER_NAME) $(IMAGE_TAG)
+
+docker_start:
+	winpty docker start -ai $(CONTAINER_NAME)
