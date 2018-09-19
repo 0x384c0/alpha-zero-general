@@ -1,0 +1,81 @@
+.board{
+    margin-top: 50px;
+	border:1px solid #dedede;
+	background:#dedede;
+	border-radius: 8px;
+	-moz-border-radius: 8px;
+	-webkit-border-radius: 8px;
+}
+.logs{
+    margin-top:50px;
+    height: 50vh;
+    border:1px solid #ccc;
+    font:16px/26px Georgia, Garamond, Serif;
+    overflow:auto;
+}
+
+/*pit*/
+.circleBase {
+    border-radius: 50%;
+}
+.boardPit {
+    width: 40px;
+    height: 40px;
+    background: white;
+    font-size: 16px;
+    text-align: center;
+    -webkit-transition-duration: 0.4s; /* Safari */
+    transition-duration: 0.4s;
+}
+.boardPit:focus {outline:0;}
+.boardPit:active {
+    background: lightgray;
+    transition: 0s
+}
+.boardPit:disabled{
+    opacity:.6;
+}
+
+/*tuz*/
+.tuzPit{
+    height: 25px;
+	background:white;
+	border-radius: 16px;
+	-moz-border-radius: 16px;
+	-webkit-border-radius: 16px;
+    line-height: 1.5;
+    font-size: 16px;
+    text-align: center;
+}
+
+/*border colors*/
+.playerPit{
+    border: 2px solid #4CAF50;
+}
+.enemyPit{
+    border: 2px solid red;
+}
+
+/*loader*/
+.loader{
+    border: 8px solid #f3f3f3; /* Light grey */
+    border-top: 8px solid #3498db; /* Blue */
+    border-radius: 50%;
+    width: 50px;
+    height: 50px;
+    animation: spin 2s linear infinite;
+    position: fixed;
+    left: 50%;
+    top: 50%;
+    margin-left: -60px;
+    margin-top: -60px;
+    z-index: 9999;
+}
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+.hidden{
+    display: none
+}

@@ -5,7 +5,7 @@ from tk.TKLogic import BOARD_SIZE, Board
 from tk.keras.NNet import NNetWrapper as NNet
 from tk.test.testTKLogick import generate_encoded_state, parse_encoded_state
 
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, send_from_directory
 from utils import *
 
 
@@ -83,15 +83,34 @@ def next_state():
 	players_scores = {k: int(v) for k, v in players_scores.items()}
 	players_tuz = {k: int(v) if v is not None else None  for k, v in players_tuz.items()}
 
+	winner = None
+	if board.is_win(1):
+		winner = 1
+	elif board.is_win(-1):
+		winner = -1
+
 	return jsonify({
 		"next_player":next_player,
 		"next_player_legal_moves":next_player_legal_moves,
 		"state":state,
-		"players_scores":players_scores,
-		"players_tuz":players_tuz,
+		"players_scores":[players_scores[1],players_scores[-1]],
+		"players_tuz":[players_tuz[1],players_tuz[-1]],
+		"winner":winner
 		})
 
+#TODO: use nginx for static files
+public_dir = "public/"
+@app.route('/')
+def root():
+    return send_from_directory(public_dir, "index.html")
 
+@app.route('/css/<path:path>')
+def send_css(path):
+    return send_from_directory(public_dir + 'css', path)
+
+@app.route('/js/<path:path>')
+def send_js(path):
+    return send_from_directory(public_dir + 'js', path)
 
 # main
 if __name__ == "__main__":
