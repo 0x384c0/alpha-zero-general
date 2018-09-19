@@ -8,7 +8,7 @@ from ..TKLogic import MAX_ARRAY_LEN_OF_ENCODED_PIT_STATE, BOARD_SIZE, WIN_SCORE
 from ..TKLogic import PIT_STATE_ENCODER, PIT_STATE_DECODER, SCORE_ENCODER, SCORE_DECODER, TUZ_ENCODER, TUZ_DECODER
 from utils import *
 
-def generate_encoded_state(state):
+def generate_encoded_state(state): #TODO: move to utils
 	pieces = state[0:18]
 	mid=int((len(pieces) + 1) / 2)
 
@@ -26,7 +26,7 @@ def generate_encoded_state(state):
 
 	return result
 
-def parse_encoded_state(state):
+def parse_encoded_state(state): #TODO: move to utils
 
 	HALF_BOARD_SIZE = int(BOARD_SIZE/2)
 	mid=int((len(state) + 1) / 2)
@@ -130,13 +130,13 @@ class TestTKLogic(unittest.TestCase):
 		self.setUp()
 		self.board.set_pieces([1, 2, 4, 6, 20, 16, 13, 0, 1,	1, 2, 2, 1, 1, 7, 3, 2, 5])
 		self.board.execute_move(0,1)
-		self.assertEqual(self.board.get_tuz(),		{1: None, -1: None})
+		self.assertEqual(self.board.get_players_tuz(),		{1: None, -1: None})
 
 		self.setUp()
 		self.board.set_pieces([1, 1, 2, 3, 1, 1, 8, 6, 15,	1, 2, 1, 16, 3, 4, 3, 1, 5])
-		self.board.get_tuz()[-1] = 1
+		self.board.get_players_tuz()[-1] = 1
 		self.assertEqual(self.board.get_legal_moves(-1),							[0, 1, 0, 0, 0, 0, 0, 0, 0,		1, 1, 1, 1, 1, 1, 1, 1, 1,])
-		self.board.get_tuz()[-1] = 0
+		self.board.get_players_tuz()[-1] = 0
 		self.assertEqual(self.board.get_legal_moves(-1),							[1, 0, 0, 0, 0, 0, 0, 0, 0,		1, 1, 1, 1, 1, 1, 1, 1, 1,])
 
 

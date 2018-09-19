@@ -59,6 +59,11 @@ test_server:
 	--data '{"board_state": [9, 9, 9, 9, 9, 9, 9, 9, 9,    9, 9, 9, 9, 9, 9, 9, 9, 9], "players_scores":[0, 0], "players_tuz":[null,null], "player":1}' \
 	"http://localhost:5000/api/predict/"
 
+	curl --header "Content-Type: application/json" \
+	--request POST \
+	--data '{"board_state": [9, 9, 9, 9, 9, 9, 9, 9, 9,    9, 9, 9, 9, 9, 9, 9, 9, 9], "players_scores":[0, 0], "players_tuz":[null,null], "player":1, "action":2}' \
+	"http://localhost:5000/api/next_state/"
+
 # docker
 IMAGE_TAG="alpha_zero_general"
 CONTAINER_NAME="alpha_zero_general_5000"

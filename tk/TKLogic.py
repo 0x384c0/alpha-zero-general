@@ -133,7 +133,7 @@ class Board():
 
 		return False
 
-	def execute_move(self, move, player):
+	def execute_move(self, move, player): # TODO: rename move to actions
 		player = player * self.__canonical_player
 		#check valid moves
 		if is_debug_mode():
@@ -281,5 +281,8 @@ class Board():
 	def get_pieces(self):
 		return self.__pieces
 
-	def get_tuz(self):
+	def get_players_scores(self):
+		return self.__players_scores
+
+	def get_players_tuz(self):
 		return self.__players_tuz
