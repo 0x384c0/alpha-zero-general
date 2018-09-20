@@ -84,9 +84,9 @@ def next_state():
 	players_tuz = {k: int(v) if v is not None else None  for k, v in players_tuz.items()}
 
 	winner = None
-	if board.is_win(1):
+	if board.is_win(1,player):
 		winner = 1
-	elif board.is_win(-1):
+	elif board.is_win(-1,player):
 		winner = -1
 
 	return jsonify({

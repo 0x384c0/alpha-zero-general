@@ -119,7 +119,7 @@ class Board():
 	def has_legal_moves(self):
 		return self.__generate_valid_moves(1).count(1) != 0 and self.__generate_valid_moves(-1).count(1) != 0
 
-	def is_win(self, player):
+	def is_win(self, player,current_player):
 		player = player * self.__canonical_player
 		#Победа в игре достигается двумя способами:
 
@@ -127,9 +127,10 @@ class Board():
 		if self.__players_scores[player] >= WIN_SCORE and self.__players_scores[-player] < WIN_SCORE:
 			return True
 
-		#у противника не осталось ходов (см. ниже «ат сыроо») и при этом он ещё не набрал 81 коргоол
-		if self.__generate_valid_moves(-player).count(1) == 0 and self.__players_scores[-player] < WIN_SCORE:
-			return True
+		if current_player == player: #ат сыроо (если после моего хода у противника не осталось ходов)
+			#у противника не осталось ходов (см. ниже «ат сыроо») и при этом он ещё не набрал 81 коргоол
+			if self.__generate_valid_moves(-player).count(1) == 0 and self.__players_scores[-player] < WIN_SCORE:
+				return True
 
 		return False
 
@@ -233,15 +234,19 @@ class Board():
 				player == 1 and (i < BOARD_SIZE/2) or  #playes 1 side
 				player == -1 and (i >= BOARD_SIZE/2)		#playes -1 side
 				): 
-				possible_moves[i] = 1 if game_state[i] > 0 else 0
+				possible_moves[i] = 1 if game_state[i] > 0 else 0 # можно сделать ход, если лунке есть камни
 		
 		if self.__players_tuz[player] is not None and  (self.__players_tuz[player] < 0 or self.__players_tuz[player] >= self.action_size) :
 			print("Warnning: __generate_valid_moves out of bounds")  # TODO: fix
 			print("game_state " + str(game_state))
 			print("tuz " + str(self.__players_tuz[player]))
 
-		if (self.__players_tuz[player] is not None and self.__players_tuz[player] >= 0 and self.__players_tuz[player] < self.action_size):
+		if (self.__players_tuz[player] is not None and self.__players_tuz[player] >= 0 and self.__players_tuz[player] < self.action_size): # туз игрока
 			possible_moves[self.__players_tuz[player]] = 1 if game_state[self.__players_tuz[player]] > 0  else 0
+
+		if (self.__players_tuz[-player] is not None and self.__players_tuz[-player] >= 0 and self.__players_tuz[-player] < self.action_size):
+			possible_moves[self.__players_tuz[-player]] = 0
+
 		return possible_moves
 
 	def __is_pit_dont_belongs_to_player(self,pit,player):

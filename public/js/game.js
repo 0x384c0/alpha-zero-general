@@ -24,7 +24,6 @@ function domContentLoaded() {
 
 //ui utils
 function bindViews() {
-	reset()
 	for (var i in [...Array(BOARD_SIZE).keys()]) {
 		pitDivs.push(document.getElementById("pit" + i));
 		pitDivs[i].addEventListener('click', function(event) {
@@ -37,6 +36,7 @@ function bindViews() {
 	logsDiv = document.getElementById("logsDiv")
 	loadingIndicator = document.getElementById("loadingIndicator")
 
+	reset()
 	refresh()
 }
 
@@ -60,8 +60,8 @@ function refresh(){
 		playerPits[playersTuz[1]] = false
 	}
 	playerPits.forEach(function (value, i) {
-		pitDivs[i].className.replace(" playerPit","")
-		pitDivs[i].className.replace(" enemyPit","")
+		pitDivs[i].className = pitDivs[i].className.replace(" playerPit","")
+		pitDivs[i].className = pitDivs[i].className.replace(" enemyPit","")
 		if (value){
 			pitDivs[i].className += " playerPit"
 		} else {
@@ -78,7 +78,9 @@ function reset(){
 	playersScores = Array(2).fill(0)
 	player = 1 // 1 or -1
 	legalMoves = Array(9).fill(true).concat(Array(9).fill(false))
+
 	loading = false
+	log("----")
 }
 
 function executeAction(actionId){
@@ -199,10 +201,10 @@ function post(url,data){
 }
 
 //utils
-function log(message,alert=false){
+function log(message,showAlert=false){
 	// console.log(message)
 	logsDiv.innerHTML = message + "<br>" + logsDiv.innerHTML
-	if (alert){
+	if (showAlert){
 		alert(message)
 	}
 }
