@@ -1,20 +1,44 @@
+## 1 способ: запуск с Docker образа
+```
+docker build -t "alpha_zero_general" --build-arg CACHEBUST=$(date +%s) https://raw.githubusercontent.com/0x384c0/alpha-zero-general/master/Dockerfile
+docker create -it -p 5000:5000 --name "alpha_zero_general_5000" "alpha_zero_general"
+docker start -ai "alpha_zero_general_5000"
+```
+
+
+## 2 способ: запуск на основной системе
 требованя
 * python 3
 * pip
-* более 10 gb оперативной памаяти
+* более 8 gb оперативной памаяти
 
 установка зависимостей
-* make setup
+```
+make setup
+```
 
 установка зависимостей c CUDA
-* make setup-gpu
-* the set GPU_MODE to \"True\" in MakeFile
+```
+make setup-gpu
+# then set GPU_MODE to \"True\" in MakeFile
+```
 
 тренировка
-* make train
+```
+make train
+```
 
 игра c RandomPlayer
-* make play
+```
+make play
+```
 
 игра c HumanTKPlayer
-* make play_with_himan
+```
+make play_with_himan
+```
+
+запуск сервера
+```
+make start_server
+```
