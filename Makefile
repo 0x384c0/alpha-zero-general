@@ -74,4 +74,7 @@ docker_build:
 	docker create  -it -p 5000:5000 --name $(CONTAINER_NAME) $(IMAGE_TAG)
 
 docker_start:
+	docker start -ai $(CONTAINER_NAME)
+
+docker_start_windows:
 	winpty docker start -ai $(CONTAINER_NAME)

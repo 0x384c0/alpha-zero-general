@@ -79,7 +79,7 @@ def next_state():
 	players_tuz = board.get_players_tuz()
 	
 	#np.int64 to int
-	state = map(int, state)
+	state = list(map(int, state))
 	players_scores = {k: int(v) for k, v in players_scores.items()}
 	players_tuz = {k: int(v) if v is not None else None  for k, v in players_tuz.items()}
 
