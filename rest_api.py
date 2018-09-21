@@ -112,6 +112,10 @@ def send_css(path):
 def send_js(path):
     return send_from_directory(public_dir + 'js', path)
 
+@app.route('/img/<path:path>')
+def send_img(path):
+    return send_from_directory(public_dir + 'img', path)
+
 # main
 if __name__ == "__main__":
 	print(("* Loading Keras model and Flask starting server..."

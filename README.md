@@ -4,6 +4,7 @@ docker build -t "alpha_zero_general" --build-arg CACHEBUST=$(date +%s) https://r
 docker create -it -p 5000:5000 --name "alpha_zero_general_5000" "alpha_zero_general"
 docker start -ai "alpha_zero_general_5000"
 ```
+Открыть в браузере Chrome [http://0.0.0.0:5000](http://0.0.0.0:5000) и играть против ИИ.
 
 
 ## 2 способ: запуск на основной системе
@@ -38,7 +39,7 @@ make play
 make play_with_himan
 ```
 
-запуск сервера
+запуск сервера на [http://0.0.0.0:5000](http://0.0.0.0:5000)
 ```
 make start_server
 ```
