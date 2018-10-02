@@ -1,45 +1,56 @@
-function importTfjs(){
-	var script = document.createElement('script')
-	script.src = "https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@0.13.0"
-	document.body.appendChild(script);
+const NUMBER_OF_MCTS_SIMULATIONS = 100
+
+function importFromUrl(url){
+	return new Promise((resolve, reject) => {
+		let script = document.createElement('script')
+		script.onload = resolve
+		script.src = url
+		document.body.appendChild(script);
+	})
 }
 
 window.addEventListener("DOMContentLoaded", domContentLoaded);
 function domContentLoaded() {
-	importTfjs()
-	document.getElementById("pit0").addEventListener('click', test, false);
+	console.log("Importing dependencies ...")
+	importFromUrl("https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@0.13.0")
+	.then(() => {return importFromUrl("/js/tfjs/utils.js")})
+	.then(() => {return importFromUrl("/js/tfjs/MCTS.js")})
+	.then(() => {return importFromUrl("/js/tfjs/tk/keras/NNet.js")})
+	.then(() => {return importFromUrl("/js/tfjs/TKLogick.js")})
+	.then(() => {return importFromUrl("/js/tfjs/TKGame.js")})
+	// .then(() => {return importFromUrl("/js/tfjs/tk/test/testTKLogick.js")}) // uncomment for tests
+	// .then(() => {document.getElementById("pit0").addEventListener('click', launchTests, false); return new Promise((resolve,reject)=>{resolve()}) }) // uncomment for tests
+	.then(() => {console.log("Dependencies imported"); setup()})
+}
+
+function setup(){
+	document.getElementById("pit0").addEventListener('click', testPrediction, false)
 }
 
 
+function testPrediction(){
 
-async function test() {
-	const model = await tf.loadModel('/model/model.json');
-	const xs = tf.tensor3d(
-		[[[ 0.,  0.,  0.,  0.,  1.,  0.,  0.,  1.],
-		[ 0.,  0.,  0.,  0.,  1.,  0.,  0.,  1.],
-		[ 0.,  0.,  0.,  0.,  1.,  0.,  0.,  1.],
-		[ 0.,  0.,  0.,  0.,  1.,  0.,  0.,  1.],
-		[ 0.,  0.,  0.,  0.,  1.,  0.,  0.,  1.],
-		[ 0.,  0.,  0.,  0.,  1.,  0.,  0.,  1.],
-		[ 0.,  0.,  0.,  0.,  1.,  0.,  0.,  1.],
-		[ 0.,  0.,  0.,  0.,  1.,  0.,  0.,  1.],
-		[ 0.,  0.,  0.,  0.,  1.,  0.,  0.,  1.],
-		[ 0.,  0.,  0.,  0.,  0.,  0.,  0.,  0.],
-		[ 1.,  1.,  1.,  1.,  1.,  1.,  1.,  1.],
-		[-0., -0., -0., -0., -1., -0., -0., -1.],
-		[-0., -0., -0., -0., -1., -0., -0., -1.],
-		[-0., -0., -0., -0., -1., -0., -0., -1.],
-		[-0., -0., -0., -0., -1., -0., -0., -1.],
-		[-0., -0., -0., -0., -1., -0., -0., -1.],
-		[-0., -0., -0., -0., -1., -0., -0., -1.],
-		[-0., -0., -0., -0., -1., -0., -0., -1.],
-		[-0., -0., -0., -0., -1., -0., -0., -1.],
-		[-0., -0., -0., -0., -1., -0., -0., -1.],
-		[-0., -0., -0., -0., -0., -0., -0., -0.],
-		[-1., -1., -1., -1., -1., -1., -1., -1.],]],
-		[1, 22, 8]);
-	const prediction = model.predict(xs)
-	prediction[0].print()
- 	prediction[1].print()
+	const nnet = new NNet()
+	if (!nnet.modelLoaded){
+		return
+	}
 
+	const state = 	[9, 9, 9, 9, 1, 9, 9, 9, 9,		9, 9, 9, 9, 9, 9, 9, 9, 9,		1,16,		1,null]
+	const board = new Board()
+	board.set_encoded_state(generate_encoded_state(state))
+	const encoded_state = board.get_encoded_state()
+
+	const args = {
+		numMCTSSims:NUMBER_OF_MCTS_SIMULATIONS,
+		cpuct:1
+	}
+
+
+
+	const game = new TKGame()
+	const mcts = new MCTS(game, nnet, args)
+	console.log("MCTS predicting ...")
+	const action = argmax(mcts.getActionProb(encoded_state, temp=0))
+	console.log("MCTS predicting done")
+	console.log(action)
 }

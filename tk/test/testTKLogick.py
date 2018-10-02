@@ -96,7 +96,7 @@ class TestTKLogic(unittest.TestCase):
 		self.board.execute_move(1,1)
 		self.assertEqual(self.board.is_win(1,1),		True)
 
-
+		# у противника не осталось ходов 
 		state = [0, 0, 0, 0, 3, 0, 0, 0, 1,		0, 0, 0, 2, 1, 3, 2, 15, 5,		70,70,		None,4]
 		self.board.set_encoded_state(generate_encoded_state(state))
 		self.board.execute_move(8,1)
