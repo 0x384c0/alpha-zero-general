@@ -41,5 +41,5 @@ make play_with_himan
 
 запуск сервера на [http://0.0.0.0:5000](http://0.0.0.0:5000)
 ```
-make start_server
+make start_server_rest
 ```

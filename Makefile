@@ -48,10 +48,18 @@ play_with_himan:
 	export GPU_MODE=$(GPU_MODE); \
 	$(PYTHON) pit.py
 
-# api
-start_server:
+#TensorFlow.js
+keras_model_to_tfjs:
+	rm -rf temp/tfjs/
+	python keras_model_to_tfjs.py
+
+start_server_tfjs:
+	$(PYTHON)  server_tfjs.py
+
+# server rest api
+start_server_rest:
 	export NUMBER_OF_MCTS_SIMULATIONS=$(NUMBER_OF_MCTS_SIMULATIONS); \
-	$(PYTHON)  rest_api.py
+	$(PYTHON)  server_rest.py
 
 test_server:
 	curl --header "Content-Type: application/json" \

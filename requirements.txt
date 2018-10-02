@@ -13,3 +13,7 @@ keras==2.0.5
 
 # api
 flask==1.0.2
+flask-cors==3.0.6
+
+# TensorFlow.js
+tensorflowjs==0.6.1
