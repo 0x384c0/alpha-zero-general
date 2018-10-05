@@ -1,5 +1,8 @@
-const BOARD_SIZE = 9 * 2
-const USER_PLAYER_ID = 1 //1 or -1
+const
+WIDTH = 9,
+HEIGHT = 2,
+BOARD_SIZE = WIDTH * HEIGHT,
+USER_PLAYER_ID = 1 //1 or -1
 
 var boardState
 var playersTuz
@@ -27,7 +30,9 @@ function bindViews() {
 	for (var i in [...Array(BOARD_SIZE).keys()]) {
 		pitDivs.push(document.getElementById("pit" + i));
 		pitDivs[i].addEventListener('click', function(event) {
-			executeAction(event.target.id.match(/\d+/g).map(Number)[0])
+			if (loading){ return }
+			showLoading()
+			setTimeout(() => { executeAction(event.target.id.match(/\d+/g).map(Number)[0])},10)
 		}, false);
 	}
 	for (var i in [...Array(2).keys()]) {
@@ -35,12 +40,16 @@ function bindViews() {
 	}
 	logsDiv = document.getElementById("logsDiv")
 	loadingIndicator = document.getElementById("loadingIndicator")
-
-	reset()
-	refresh()
+	
+	showLoading()
+	setupApi()
+	.then(() => {
+		reset()
+		refresh()
+	})
 }
 
-function refresh(){
+function refresh(isHideLoading=true){
 	boardState.forEach(function (value, i) {
 		pitDivs[i].innerHTML = value
 	});
@@ -69,6 +78,8 @@ function refresh(){
 		}
 		pitDivs[i].disabled = !legalMoves[i]
 	});
+	if (isHideLoading)
+		hideLoading()
 }
 
 //game
@@ -78,34 +89,27 @@ function reset(){
 	playersScores = Array(2).fill(0)
 	player = 1 // 1 or -1
 	legalMoves = Array(9).fill(true).concat(Array(9).fill(false))
-
-	loading = false
-	log("----")
 }
 
 function executeAction(actionId){
-	if (loading){
-		return
-	}
 
 	var data = getStateData()
 	data["action"] = actionId 
-	showLoading()
 	logAction(actionId)
-	post("/api/next_state/", data)
+	getNextState(data)
 	.then(function(json){
 		if (json.winner != null){
 			return showWinnerAlert(json.winner)
 		}
 		setStateData(json)
-		refresh()
-		return post("/api/predict/", getStateData())
+		refresh(false)
+		return predictAction(getStateData())
 	})
 	.then(function(json){
 		var data = getStateData()
 		data["action"] = json.action
 		logAction(json.action)
-		return post("/api/next_state/", data)
+		return getNextState(data)
 	})
 	.then(function(json){
 		if (json.winner != null){
@@ -113,16 +117,17 @@ function executeAction(actionId){
 		}
 		setStateData(json)
 		refresh()
-		hideLoading()
 	})
 	.catch(function(data) {
 		if (data == "GAME_ENDED"){
 			return
 		}
+		if (data instanceof Error ){
+			throw data
+		}
 		log("Network error " + data.status,true)
 		reset()
 		refresh()
-		hideLoading()
 	})
 }
 
@@ -172,33 +177,10 @@ function showWinnerAlert(winner){
 	}
 	reset()
 	refresh()
-	hideLoading()
 	return rejectPromise("GAME_ENDED")
 }
 
 
-// network
-function post(url,data){
-	return new Promise(function(resolve, reject) {
-
-		var xhr = new XMLHttpRequest();
-		xhr.open("POST", url, true);
-		xhr.setRequestHeader("Content-Type", "application/json");
-		xhr.onreadystatechange = function () {
-			if (xhr.readyState === 4 && xhr.status === 200) {
-				var json = JSON.parse(xhr.responseText);
-				resolve(json);
-			} else {
-				if (!(xhr.status === 200)){
-					reject(xhr)
-				}
-			}
-		};
-		var strData = JSON.stringify(data);
-		xhr.send(strData);
-
-	})
-}
 
 //utils
 function log(message,showAlert=false){

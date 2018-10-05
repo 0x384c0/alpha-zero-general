@@ -13,7 +13,8 @@ class TestTKLogic{
 			this.test_execute_move,
 			this.test_tuz,
 			this.test_encoded_state,
-			this.testCanonicalForm
+			this.testCanonicalForm,
+			this.testNNOutputs
 		]
 		for (let test of tests){
 			console.log("%c testing " + test.name, 'color: green; font-weight: bold;')
@@ -166,5 +167,54 @@ class TestTKLogic{
 		let valids_p2 = game.getValidMoves(canonical_form_p2,1)
 
 		this.assertEqual(valids_p2, [0, 0, 0, 0, 0, 0, 0, 0, 0,	1, 1, 1, 1, 1, 1, 1, 1, 1])
+	}
+
+	testNNOutputs(){
+		let n1 = new NNet()
+
+		// let game = new TKGame()
+		// let
+		// state = [9, 9, 9, 9, 9, 9, 9, 9, 9, 1, 10, 10, 10, 10, 10, 10, 10, 10, 0, 0, null, null],
+		// encoded_state = generate_encoded_state(state),
+		// canonical_form = game.getCanonicalForm(encoded_state, -1)
+
+		let canonical_form = [
+			[0, 0, 0, 0, 0, 0, 0, -1],
+			[0, 0, 0, 0, -1, 0, -1, 0],
+			[0, 0, 0, 0, -1, 0, -1, 0],
+			[0, 0, 0, 0, -1, 0, -1, 0],
+			[0, 0, 0, 0, -1, 0, -1, 0],
+			[0, 0, 0, 0, -1, 0, -1, 0],
+			[0, 0, 0, 0, -1, 0, -1, 0],
+			[0, 0, 0, 0, -1, 0, -1, 0],
+			[0, 0, 0, 0, -1, 0, -1, 0],
+			[0, 0, 0, 0, 0, 0, 0, 0],
+			[-1, -1, -1, -1, -1, -1, -1, -1],
+			[0, 0, 0, 0, 1, 0, 0, 1],
+			[0, 0, 0, 0, 1, 0, 0, 1],
+			[0, 0, 0, 0, 1, 0, 0, 1],
+			[0, 0, 0, 0, 1, 0, 0, 1],
+			[0, 0, 0, 0, 1, 0, 0, 1],
+			[0, 0, 0, 0, 1, 0, 0, 1],
+			[0, 0, 0, 0, 1, 0, 0, 1],
+			[0, 0, 0, 0, 1, 0, 0, 1],
+			[0, 0, 0, 0, 1, 0, 0, 1],
+			[0, 0, 0, 0, 0, 0, 0, 0],
+			[1, 1, 1, 1, 1, 1, 1, 1],
+		]
+
+
+		let prediction = n1.predict(canonical_form)
+
+		let action = argmax(prediction[0])
+
+		// print("canonical_form")
+		// print(canonical_form)
+		// print( "Predicted action: " + argmax(prediction[0]) + " It should be 16") //TODO: fix
+
+		// _model.summary()
+		// print(_model.getWeights().length)
+
+		this.assertEqual(action,16)
 	}
 }

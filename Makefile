@@ -24,7 +24,8 @@ clean:
 test:
 	export DEBUG_MODE="True"; \
 	$(PYTHON) -m tk.test.testTKLogick; \
-	$(PYTHON) -m tk.test.testTKGame
+	$(PYTHON) -m tk.test.testTKGame; \
+	$(PYTHON) -m tk.test.testNNet
 
 # nn
 train:
@@ -52,6 +53,7 @@ play_with_himan:
 keras_model_to_tfjs:
 	rm -rf temp/tfjs/
 	python keras_model_to_tfjs.py
+	tensorflowjs_converter --input_format keras "temp/best.h5" temp/tfjs
 
 start_server_tfjs:
 	$(PYTHON)  server_tfjs.py

@@ -1,11 +1,11 @@
 const
-WIDTH = 9,
-HEIGHT = 2,
+// WIDTH = 9, //already defined in game.js
+// HEIGHT = 2, //already defined in game.js
 
 INIT_BALLS_COUNT_IN_PIT = 9,
 
 MAX_ARRAY_LEN_OF_ENCODED_PIT_STATE = 8,
-BOARD_SIZE =  WIDTH * HEIGHT,
+// BOARD_SIZE =  WIDTH * HEIGHT,  //already defined in game.js
 WIN_SCORE = (BOARD_SIZE * WIDTH)/HEIGHT,
 
 PIT_STATE_ENCODER = array_to_bits_batch_with_shape, // data_array_to_one_hot_with_shape
@@ -61,16 +61,16 @@ class Board{
 		secondHalf[WIDTH - 1 + 2] = TUZ_ENCODER(this.__players_tuz[-1],				MAX_ARRAY_LEN_OF_ENCODED_PIT_STATE)
 		
 		if (player * this.__canonical_player == 1)
-			operationWith2DArray(secondHalf, -1, "*")
+			secondHalf = operationWith2DArray(secondHalf, -1, "*")
 		else
-			operationWith2DArray(firstHalf, -1, "*")
+			firstHalf = operationWith2DArray(firstHalf, -1, "*")
 
 		let result = concatenate(firstHalf, secondHalf)
 
 		return result
 	}
 	set_encoded_state(i_state){
-		let state = JSON.parse(JSON.stringify(i_state)) // clone
+		let state = copy(i_state) // clone
 		
 		let mid = int(state.length / 2)
 		let firstHalf = state.slice(0,mid)
@@ -87,10 +87,10 @@ class Board{
 		}
 
 		if (firstSum > 0 || secondSum < 0) {//  playe 1 in firstHalf
-			operationWith2DArray(secondHalf, -1, "*")
+			secondHalf = operationWith2DArray(secondHalf, -1, "*")
 		} else {// player -1 in firstHalf
 			this.__canonical_player = -1
-			operationWith2DArray(firstHalf, -1, "*")
+			firstHalf = operationWith2DArray(firstHalf, -1, "*")
 		}
 
 		const HALF_BOARD_SIZE = int(BOARD_SIZE/2)
@@ -129,7 +129,7 @@ class Board{
 	}
 	execute_move( move, i_player){
 		let player = i_player * this.__canonical_player
-		let game_state = this.__pieces
+		let game_state = copy(this.__pieces)
 		let balls_in_first_pit = game_state[move]
 		let last_pit = move + balls_in_first_pit
 		let last_pit_looped = last_pit < len(game_state) ? last_pit : last_pit % len(game_state)
@@ -253,7 +253,9 @@ class Board{
 
 
 // helpers
-function generate_encoded_state(state){ // TODO: move to utils
+function generate_encoded_state(i_state){ // TODO: move to utils
+	let state = copy(i_state)
+
 	let pieces = state.slice(0,18)
 	let mid = int((len(pieces) + 1) / 2)
 
@@ -265,7 +267,7 @@ function generate_encoded_state(state){ // TODO: move to utils
 	secondHalf[9] = SCORE_ENCODER(state[19],				MAX_ARRAY_LEN_OF_ENCODED_PIT_STATE)
 	secondHalf[10] = TUZ_ENCODER(state[21],					MAX_ARRAY_LEN_OF_ENCODED_PIT_STATE)
 
-	operationWith2DArray(secondHalf, -1, "*")
+	secondHalf = operationWith2DArray(secondHalf, -1, "*")
 
 	result = concatenate(firstHalf, secondHalf)
 
@@ -273,7 +275,8 @@ function generate_encoded_state(state){ // TODO: move to utils
 }
 
 
-function parse_encoded_state(state){ // TODO: move to utils
+function parse_encoded_state(i_state){ // TODO: move to utils
+	let state = copy(i_state)
 
 	HALF_BOARD_SIZE = int(BOARD_SIZE/2)
 	mid=int((len(state) + 1) / 2)
@@ -296,7 +299,7 @@ function parse_encoded_state(state){ // TODO: move to utils
 		[firstHalf,secondHalf] = [secondHalf,firstHalf]
 	}
 
-	operationWith2DArray(secondHalf,-1,"*") // at this point second half always contains negative numbers
+	secondHalf = operationWith2DArray(secondHalf,-1,"*") // at this point second half always contains negative numbers
 
 
 

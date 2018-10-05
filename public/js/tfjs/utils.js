@@ -1,7 +1,11 @@
+function copy(object){
+	return JSON.parse(JSON.stringify(object))
+}
 function print(object){// override default print
 	// console.log( new Error().stack )
-	console.log(JSON.parse(JSON.stringify(object)))
+	console.log(copy(object))
 }
+
 
 function argmax(array){
 	return array.map((x, i) => [x, i]).reduce((r, a) => (a[0] > r[0] ? a : r))[1]
@@ -32,7 +36,8 @@ function removeFromArray(array,obj){
 	}
 }
 
-function operationWithArrays(a1,a2,op){
+function operationWithArrays(i_a1,a2,op){
+	let a1 = copy(i_a1)
 	if (Array.isArray(a2)){
 		for (let i = 0; i < a1.length; i++) {
 			if (op == "*"){
@@ -53,7 +58,8 @@ function operationWithArrays(a1,a2,op){
 	return a1
 }
 
-function operationWith2DArray(array2D,number,op){
+function operationWith2DArray(i_array2D,number,op){
+	let array2D = copy(i_array2D)
 	for (let array of array2D) {
 		for (let i = 0; i < array.length; i++) {
 			if (op == "*"){

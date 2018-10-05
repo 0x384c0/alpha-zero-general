@@ -13,6 +13,8 @@ from NeuralNet import NeuralNet
 import argparse
 from .TKNNet import TKNNet as onnet
 
+from ..test.testTKLogick import parse_encoded_state
+
 args = dotdict({
     'lr': 0.001,
     'dropout': 0.3,
@@ -47,11 +49,18 @@ class NNetWrapper(NeuralNet):
 
         # preparing input
         board = board[np.newaxis, :, :]
-
         # run
         pi, v = self.nnet.model.predict(board)
 
         #print('PREDICTION TIME TAKEN : {0:03f}'.format(time.time()-start))
+        
+        # print("predict")
+        # print("board")
+        # print(board)
+        # print("action")
+        # # print(map(lambda x:"%.19f" % x, pi[0]))
+        # print(np.argmax(pi[0]))
+
         return pi[0], v[0]
 
     def save_checkpoint(self, folder='checkpoint', filename='checkpoint.pth.tar'):
@@ -70,3 +79,12 @@ class NNetWrapper(NeuralNet):
             raise("No model in path '{}'".format(filepath))
         self.nnet.model.load_weights(filepath)
         print("Loaded model weights from " + str(filepath))
+
+    def save_for_web(self, folder, filename):
+        filepath = os.path.join(folder, filename)
+        if not os.path.exists(folder):
+            print("Checkpoint Directory does not exist! Making directory {}".format(folder))
+            os.mkdir(folder)
+        else:
+            print("Checkpoint Directory exists! ")
+        self.nnet.model.save(filepath)

@@ -1,4 +1,7 @@
+#! /usr/bin/env python
+# -*- coding: utf-8 -*-
 import unittest
+import copy
 
 import sys
 sys.path.append('..')
@@ -9,6 +12,8 @@ from ..TKLogic import PIT_STATE_ENCODER, PIT_STATE_DECODER, SCORE_ENCODER, SCORE
 from utils import *
 
 def generate_encoded_state(state): #TODO: move to utils
+	state = copy.deepcopy(state)
+	
 	pieces = state[0:18]
 	mid=int((len(pieces) + 1) / 2)
 
@@ -27,6 +32,7 @@ def generate_encoded_state(state): #TODO: move to utils
 	return result
 
 def parse_encoded_state(state): #TODO: move to utils
+	state = copy.deepcopy(state)
 
 	HALF_BOARD_SIZE = int(BOARD_SIZE/2)
 	mid=int((len(state) + 1) / 2)
@@ -63,7 +69,7 @@ def parse_encoded_state(state): #TODO: move to utils
 
 
 
-class TestTKLogic(unittest.TestCase):
+class TestTKLogic(unittest.TestCase): #TODO: rename to testTKLogick
 	def setUp(self):
 		self.board = Board()
 

@@ -112,6 +112,10 @@ def send_css(path):
 def send_js(path):
     return send_from_directory(public_dir + 'js', path)
 
+@app.route('/js/api.js') # api.js
+def send_js_api():
+	return send_from_directory(public_dir + 'js', "apiRest.js")
+
 @app.route('/img/<path:path>')
 def send_img(path):
     return send_from_directory(public_dir + 'img', path)

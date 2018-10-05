@@ -1,34 +1,51 @@
-var model = null
-var loading = false
+var _model = null
+var _loading = false
 class NNet{
-	constructor(){
-		if (model == null && !loading){
-			loading = true
+	load(){
+		if (_model == null && !_loading){
+			_loading = true
 			console.log("Loading model ... ")
-			tf.loadModel('/model/model.json')
+			return  tf
+			.loadModel('/model/model.json')
 			.then((i_model)=>{
-				model = i_model
-				loading = false
+				_model = i_model
+				_loading = false
 				console.log("Model loaded ")
+				return Promise.resolve()
 			})
-			.catch((error)=>{
-				console.log("Loading model error: " + error)
-			})
+		} else{
+			return Promise.resolve()
 		}
 	}
 
 	get modelLoaded(){
-		return model != null
+		return _model != null
 	}
 
 	predict(canonicalBoard){
-		const xs = tf.tensor3d(
-		[canonicalBoard],
-		[1, 22, 8]
-		)
-		const prediction = model.predict(xs)
-		let actions = Array.from(prediction[0].dataSync())
-		let winProbability = Array.from(prediction[1].dataSync())
-		return [actions,winProbability]
+		tf.nextFrame()
+		return tf.tidy(() => {
+			const xs = tf.tensor3d(
+				[canonicalBoard],
+				[1, 22, 8]
+			)
+
+			const prediction = _model.predict(xs)
+
+			let actions = Array.from(prediction[0].dataSync())
+			let winProbability = Array.from(prediction[1].dataSync())
+
+			// print("predict")
+			// print("board")
+			// print(canonicalBoard)
+			// print("action")
+			// // xs.print()
+			// // prediction[0].print()
+			// prediction[1].print()
+			// print(argmax(actions))
+
+
+			return [actions,winProbability]
+		})
 	}
 }
