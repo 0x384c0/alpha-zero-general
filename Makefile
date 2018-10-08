@@ -32,7 +32,7 @@ train:
 	export NUMBER_OF_TRAIN_ITERATIONS=$(NUMBER_OF_TRAIN_ITERATIONS); \
 	export NUMBER_OF_MCTS_SIMULATIONS=$(NUMBER_OF_MCTS_SIMULATIONS); \
 	export GPU_MODE=$(GPU_MODE); \
-	$(PYTHON) main.py
+	$(PYTHON) train_with_alpha_zero.py
 
 cpulimit:
 	sleep 1 && cpulimit -p $$(pgrep "Python") -l 200

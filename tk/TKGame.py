@@ -3,7 +3,7 @@
 import sys
 sys.path.append('..')
 from Game import Game
-from .TKLogic import Board
+from .TKLogic import Board, WIN_SCORE
 import numpy as np
 
 

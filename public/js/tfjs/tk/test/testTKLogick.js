@@ -214,6 +214,9 @@ class TestTKLogic{
 
 		// _model.summary()
 		// print(_model.getWeights().length)
+		// for (let weight of _model.getWeights()){
+		// 	weight.print()
+		// }
 
 		this.assertEqual(action,16)
 	}

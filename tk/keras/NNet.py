@@ -73,12 +73,13 @@ class NNetWrapper(NeuralNet):
         self.nnet.model.save_weights(filepath)
 
     def load_checkpoint(self, folder='checkpoint', filename='checkpoint.pth.tar'):
-        # https://github.com/pytorch/examples/blob/master/imagenet/main.py#L98
+        # https://github.com/pytorch/examples/blob/master/imagenet/train_with_alpha_zero.py#L98
         filepath = os.path.join(folder, filename)
         if not os.path.exists(filepath):
-            raise("No model in path '{}'".format(filepath))
-        self.nnet.model.load_weights(filepath)
-        print("Loaded model weights from " + str(filepath))
+            print("No model in path '{}'".format(filepath))
+        else:
+            self.nnet.model.load_weights(filepath)
+            print("Loaded model weights from " + str(filepath))
 
     def save_for_web(self, folder, filename):
         filepath = os.path.join(folder, filename)
@@ -86,5 +87,6 @@ class NNetWrapper(NeuralNet):
             print("Checkpoint Directory does not exist! Making directory {}".format(folder))
             os.mkdir(folder)
         else:
-            print("Checkpoint Directory exists! ")
+            print("Checkpoint Directory exists.")
+        print "Saving model"
         self.nnet.model.save(filepath)

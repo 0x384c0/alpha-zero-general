@@ -60,6 +60,8 @@ class TestNNet(unittest.TestCase): #TODO: rename to testTKLogick
 		# print "Predicted action: " + str(action) + " It should be 16"
 		# print len(self.n1.nnet.model.get_weights())
 		# print prediction[1]
+		# for weight in self.n1.nnet.model.get_weights():
+		# 	print weight
 
 		self.assertEqual(action,16)
 

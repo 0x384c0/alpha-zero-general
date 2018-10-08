@@ -11,7 +11,7 @@ from random import shuffle
 class Coach():
     """
     This class executes the self-play + learning. It uses the functions defined
-    in Game and NeuralNet. args are specified in main.py.
+    in Game and NeuralNet. args are specified in train_with_alpha_zero.py.
     """
     def __init__(self, game, nnet, args):
         self.game = game

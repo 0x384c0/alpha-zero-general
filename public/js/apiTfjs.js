@@ -11,6 +11,8 @@ function setupApi() {
 	.then(() => {return importFromUrl("/js/tfjs/TKGame.js")})
 	.then(() => {
 		console.log("Dependencies imported")
+		console.log("Using CPU backend")
+		tf.setBackend('cpu')
 		return new NNet().load()
 	})
 	.then(() => {return importFromUrl("/js/tfjs/tk/test/testTKLogick.js")}) // uncomment for tests
