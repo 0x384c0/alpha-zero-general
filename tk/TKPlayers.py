@@ -48,5 +48,64 @@ class HumanTKPlayer():
         return action_number
 
 
+import random
+from tk.TKGame import Board
+class HeuristicPlayer():
+
+    INVALID_ACTION_REWARD = -1
+    def random_argmax(self, array):
+        MAX_DIFF = 2
+        arg_max = np.argmax(array)
+        max_value = array[arg_max]
+
+        max_value_ids = [arg_max,arg_max,arg_max]
+
+        for idx, value in enumerate(array):
+            if value != self.INVALID_ACTION_REWARD and max_value - value <= MAX_DIFF:
+                max_value_ids.append(idx)
+
+        return random.choice(max_value_ids)
+
+
+    def __init__(self, game):
+        self.game = game
+
+
+    def play(self, encoded_state):
+        print "encoded_state"
+        print encoded_state
+        board = Board()
+        board.set_encoded_state(encoded_state)
+        player = board.get_canonical_player()
+        validMoves = self.game.getValidMoves(encoded_state, player)
+
+
+        print "validMoves"
+        print validMoves
+        print "player"
+        print player 
+
+        rewards = []
+        for action, valid in enumerate(validMoves):
+            if valid == 1:
+                next_encoded_state = self.game.getNextState(encoded_state, player, action)[0]
+                current_score = board.get_players_scores()[player]
+
+                next_board = Board()
+                next_board.set_encoded_state(next_encoded_state)
+                next_score = next_board.get_players_scores()[player]
+
+                reward = next_score - current_score
+
+                rewards.append(reward)
+            else:
+                rewards.append(self.INVALID_ACTION_REWARD) # invalid action
+
+        print "rewards"
+        print rewards
+
+        return self.random_argmax(rewards)
+
+
 def int_to_bool_string(int):
     return "\033[32mYES\033[0m" if int > 0 else "\033[31mNO\033[0m"

@@ -9,19 +9,19 @@ HEIGHT = 2
 
 INIT_BALLS_COUNT_IN_PIT = 9
 
-MAX_ARRAY_LEN_OF_ENCODED_PIT_STATE = 8 # TODO: find rignt value , minimum muste be 9 if tun encoding is onehot
+MAX_ARRAY_LEN_OF_ENCODED_PIT_STATE = 1 # TODO: find rignt value , minimum muste be 9 if tun encoding is onehot
 BOARD_SIZE =  WIDTH * HEIGHT
 WIN_SCORE = (BOARD_SIZE * WIDTH)/HEIGHT
 
 
-PIT_STATE_ENCODER = array_to_bits_batch_with_shape # data_array_to_one_hot_with_shape
-PIT_STATE_DECODER = bits_batch_to_array # one_hot_batch_to_array
+PIT_STATE_ENCODER = array_to_array_without_none # data_array_to_one_hot_with_shape
+PIT_STATE_DECODER = array_without_none_to_array # one_hot_batch_to_array
 
-SCORE_ENCODER = number_to_bits_array
-SCORE_DECODER = bits_array_to_number
+SCORE_ENCODER = number_to_number_without_none
+SCORE_DECODER = number_without_none_to_number
 
-TUZ_ENCODER = number_to_bits_array # number_to_onehot
-TUZ_DECODER = bits_array_to_number # onehot_to_number
+TUZ_ENCODER = number_to_number_without_none # number_to_onehot
+TUZ_DECODER = number_without_none_to_number # onehot_to_number
 
 # 0-9 	- player 1		green
 # 10-18 - player -1		red
@@ -291,3 +291,6 @@ class Board():
 
 	def get_players_tuz(self):
 		return self.__players_tuz
+
+	def get_canonical_player(self):
+		return self.__canonical_player

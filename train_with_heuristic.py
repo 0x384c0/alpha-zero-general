@@ -11,7 +11,8 @@ from keras.utils import Progbar
 
 from utils import *
 
-numIters = 1000 #number_of_train_iterations()
+NUM_ITERS = 100 #number_of_train_iterations()
+NUM_STEPS = 1000
 
 INVALID_ACTION_REWARD = -1
 
@@ -29,7 +30,7 @@ def random_argmax(array):
 	return random.choice(max_value_ids)
 
 
-def generate_train_batch(numIters):
+def generate_train_batch(num_steps):
 	input_boards = []
 	target_pis = []
 	target_vs = []
@@ -40,8 +41,8 @@ def generate_train_batch(numIters):
 	player = 1
 
 	print "generate_train_batch"
-	progbar = Progbar(numIters)
-	for x in range(numIters):
+	progbar = Progbar(num_steps)
+	for x in range(num_steps):
 		progbar.add(1)
 
 		encoded_state = board.get_encoded_state()
@@ -51,9 +52,9 @@ def generate_train_batch(numIters):
 
 
 		rewards = []
-		for action in validMoves:
+		for i, action in enumerate(validMoves):
 			if action == 1:
-				next_encoded_state = game.getNextState(encoded_state, player, action)[0]
+				next_encoded_state = game.getNextState(encoded_state, player, i)[0]
 				current_score = board.get_players_scores()[player]
 
 				next_board = Board()
@@ -65,6 +66,7 @@ def generate_train_batch(numIters):
 				rewards.append(reward)
 			else:
 				rewards.append(INVALID_ACTION_REWARD) # invalid action
+
 
 		best_action = random_argmax(rewards)
 
@@ -98,42 +100,43 @@ def generate_train_batch(numIters):
 
 
 
-# print batch
 
-
+# training
 
 g = Game()
 n1 = NNet(g)
 n1.load_checkpoint('temp',"best_heuristic.h5")
 n1.nnet.model._make_predict_function()
 
-
-
-
-
-
-for i in range(20):
-	input_boards, target_pis, target_vs = generate_train_batch(numIters)
+for i in range(NUM_ITERS):
+	print "iteration " + str(i) + " / " + str(NUM_ITERS)
+	input_boards, target_pis, target_vs = generate_train_batch(NUM_STEPS)
 	input_boards = np.asarray(input_boards)
 	target_pis = np.asarray(target_pis)
 	target_vs = np.asarray(target_vs)
 
-	n1.nnet.model.fit(x = input_boards, y = [target_pis, target_vs], batch_size = int(numIters * .6), epochs = 5)
-	n1.save_checkpoint('temp',"best_heuristic.h5")
+	n1.nnet.model.fit(x = input_boards, y = [target_pis, target_vs], batch_size = int(NUM_STEPS * .6), epochs = 5)
+
+	if i % 5 == 0:
+		n1.save_checkpoint('temp',"best_heuristic.h5")
 
 loss = n1.nnet.model.test_on_batch(x = input_boards, y = [target_pis, target_vs])
 print loss
 
 
+# others
+
 # state = [2, 2, 2, 2, 2, 2, 2, 2, 2, 3,		2, 3, 2, 2, 2, 2, 2, 2, 0, 0, None, None]
 # encoded_state = generate_encoded_state(state)
 
-# prediction = n1.predict(encoded_state)
-# action = np.argmax(prediction[0])
 
-# next_encoded_state = g.getNextState( encoded_state, 1, action)[0]
+# board = Board()
+# encoded_state = board.get_encoded_state()
 
-# print state
-# print prediction
-# print action
-# print parse_encoded_state(next_encoded_state)
+# print encoded_state
+
+# board.set_encoded_state(encoded_state)
+
+# print board.get_pieces()
+# print board.get_players_scores()
+# print board.get_players_tuz()

@@ -24,6 +24,7 @@ g = TKGame()
 # all players
 rp = RandomPlayer(g).play
 hp = HumanTKPlayer(g).play
+heurp = HeuristicPlayer(g).play
 
 # nnet players
 n1 = NNet(g)
@@ -36,7 +37,8 @@ n1p = lambda x: np.argmax(mcts1.getActionProb(x, temp=0))
 descriptions = {
 	rp : "Random Player",
 	hp : "Human Player",
-	n1p : "NNet Player"
+	n1p : "NNet Player",
+	heurp : "Heuristic Player" 
 }
 #n2 = NNet(g)
 #n2.load_checkpoint('/dev/8x50x25/','best.pth.tar')
@@ -46,7 +48,7 @@ descriptions = {
 isPlayWithHuman = os.getenv('PLAY_WITH_HUMAN', "False") == "True"
 oppenentOfNN = hp if isPlayWithHuman else rp
 
-arena = Arena.Arena(n1p, oppenentOfNN, g, display=display)
+arena = Arena.Arena(heurp, oppenentOfNN, g, display=display)
 arena.descriptions = descriptions
 result = arena.playGames(40, verbose=True)
 print("------------------")
