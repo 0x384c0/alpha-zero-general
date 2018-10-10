@@ -48,11 +48,11 @@ descriptions = {
 isPlayWithHuman = os.getenv('PLAY_WITH_HUMAN', "False") == "True"
 oppenentOfNN = hp if isPlayWithHuman else rp
 
-arena = Arena.Arena(heurp, oppenentOfNN, g, display=display)
+arena = Arena.Arena(n1p, oppenentOfNN, g, display=display)
 arena.descriptions = descriptions
 result = arena.playGames(100, verbose=True)
 print("------------------")
-print("oneWon ("+ descriptions[heurp] +"):	" + green(result[0]))
+print("oneWon ("+ descriptions[n1p] +"):	" + green(result[0]))
 print("twoWon:					" + red(result[1]))
 print("draw:					" + str(result[2]))
 print("------------------")

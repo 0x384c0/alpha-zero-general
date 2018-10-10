@@ -119,17 +119,17 @@ class Board():
 	def has_legal_moves(self):
 		return self.get_legal_moves(1).count(1) != 0 or self.get_legal_moves(-1).count(1) != 0
 
-	def is_win(self, player,current_player):
+	def is_win(self, player):
 		#Победа в игре достигается двумя способами:
 
 		#набор в свой казан 82 коргоола или более
 		if self.__players_scores[player] >= WIN_SCORE and self.__players_scores[-player] < WIN_SCORE:
 			return True
 
-		if current_player == player: #ат сыроо (если после моего хода у противника не осталось ходов)
-			#у противника не осталось ходов (см. ниже «ат сыроо») и при этом он ещё не набрал 81 коргоол
-			if self.__generate_valid_moves(-player).count(1) == 0 and self.__players_scores[-player] < WIN_SCORE:
-				return True
+		#ат сыроо (если после моего хода у противника не осталось ходов)
+		#у противника не осталось ходов (см. ниже «ат сыроо») и при этом он ещё не набрал 81 коргоол
+		if self.__generate_valid_moves(-player).count(1) == 0 and self.__players_scores[-player] < WIN_SCORE:
+			return True
 
 		return False
 

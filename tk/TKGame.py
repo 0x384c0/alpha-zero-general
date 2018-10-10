@@ -56,10 +56,10 @@ class TKGame(Game):
         b = Board() #TODO: add other boars states params
         b.set_encoded_state(np.copy(board))
 
-        if b.is_win(player, player):
+        if b.is_win(player):
             # debug_print("1")
             return 1
-        if b.is_win(-player, player):
+        if b.is_win(-player):
             # debug_print("-1")
             return -1
         if b.has_legal_moves():

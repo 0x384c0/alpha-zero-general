@@ -12,7 +12,7 @@ from keras.utils import Progbar
 
 from utils import *
 
-NUM_ITERS = 100 #number_of_train_iterations()
+NUM_ITERS = number_of_train_iterations()
 NUM_STEPS = 1000
 
 INVALID_ACTION_REWARD = -1
@@ -91,7 +91,7 @@ def generate_train_batch(num_steps):
 
 g = Game()
 n1 = NNet(g)
-n1.load_checkpoint('temp',"best_heuristic.h5")
+n1.load_checkpoint('temp',"best.pth.tar")
 n1.nnet.model._make_predict_function()
 
 for i in range(NUM_ITERS):
@@ -104,7 +104,7 @@ for i in range(NUM_ITERS):
 	n1.nnet.model.fit(x = input_boards, y = [target_pis, target_vs], batch_size = int(NUM_STEPS * .6), epochs = 5)
 
 	if i % 5 == 0:
-		n1.save_checkpoint('temp',"best_heuristic.h5")
+		n1.save_checkpoint('temp',"best.pth.tar")
 
 loss = n1.nnet.model.test_on_batch(x = input_boards, y = [target_pis, target_vs])
 print loss

@@ -21,7 +21,7 @@ args = dotdict({
     'epochs': 10,
     'batch_size': 64,
     'cuda': is_gpu_mode(),
-    'num_channels': 256,
+    'num_channels': 512,
 })
 
 class NNetWrapper(NeuralNet):

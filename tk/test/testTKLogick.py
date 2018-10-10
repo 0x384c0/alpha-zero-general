@@ -97,20 +97,18 @@ class TestTKLogic(unittest.TestCase): #TODO: rename to testTKLogick
 	def test_is_win(self):
 		state = [9, 9, 9, 9, 9, 9, 9, 9, 9,		9, 9, 9, 9, 9, 9, 9, 9, 9,		WIN_SCORE - 1,1,		None,None]
 		self.board.set_encoded_state(generate_encoded_state(state))
-		self.assertEqual(self.board.is_win(1,1),		False)
-		self.assertEqual(self.board.is_win(-1,1),		False)
+		self.assertEqual(self.board.is_win(1),		False)
+		self.assertEqual(self.board.is_win(-1),		False)
 		self.board.execute_move(1,1)
-		self.assertEqual(self.board.is_win(1,1),		True)
+		self.assertEqual(self.board.is_win(1),		True)
 
 		# у противника не осталось ходов 
 		state = [0, 0, 0, 0, 3, 0, 0, 0, 1,		0, 0, 0, 2, 1, 3, 2, 15, 5,		70,70,		None,4]
 		self.board.set_encoded_state(generate_encoded_state(state))
 		self.board.execute_move(8,1)
-		self.assertEqual(self.board.is_win(-1,1),		False)
-		self.assertEqual(self.board.is_win(-1,-1),		True)
+		self.assertEqual(self.board.is_win(-1),		True)
 		self.board.execute_move(12,-1)
-		self.assertEqual(self.board.is_win(1,-1),		False)
-		self.assertEqual(self.board.is_win(-1,-1),		True)
+		self.assertEqual(self.board.is_win(-1),		True)
 
 	def test_execute_move(self):
 		self.assertEqual(parse_encoded_state(self.board.execute_move(0,1)),		[1, 10, 10, 10, 10, 10, 10, 10, 10,		9,  9, 9, 9, 9, 9, 9, 9, 9,				0, 0, None, None])
@@ -130,7 +128,7 @@ class TestTKLogic(unittest.TestCase): #TODO: rename to testTKLogick
 
 		self.board.set_encoded_state(generate_encoded_state( 					[3, 9, 9, 0, 0, 0, 0, 0, 0,				0, 0, 0, 0, 0, 0, 0, 0, 0,				70, 20,	None, None]))
 		self.assertEqual(parse_encoded_state(self.board.execute_move(0,1)),		[0, 0, 0, 0, 0, 0, 0, 0, 0,				0, 0, 0, 0, 0, 0, 0, 0, 0,				91, 20,	None, None])
-		self.assertEqual(self.board.is_win(1,1),True)
+		self.assertEqual(self.board.is_win(1),True)
 
 
 	def test_tuz(self):

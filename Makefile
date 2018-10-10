@@ -1,6 +1,6 @@
 PYTHON=python
 GPU_MODE="True" # run "make setup-gpu" before setting to True
-NUMBER_OF_TRAIN_ITERATIONS=1
+NUMBER_OF_TRAIN_ITERATIONS=1000
 NUMBER_OF_MCTS_SIMULATIONS=100
 
 all:
@@ -33,6 +33,10 @@ train:
 	export NUMBER_OF_MCTS_SIMULATIONS=$(NUMBER_OF_MCTS_SIMULATIONS); \
 	export GPU_MODE=$(GPU_MODE); \
 	$(PYTHON) train_with_alpha_zero.py
+
+train_with_heuristic:
+	export NUMBER_OF_TRAIN_ITERATIONS=$(NUMBER_OF_TRAIN_ITERATIONS); \
+	$(PYTHON) train_with_heuristic.py
 
 cpulimit:
 	sleep 1 && cpulimit -p $$(pgrep "Python") -l 200
