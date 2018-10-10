@@ -1,5 +1,6 @@
 import numpy as np
 import os
+import copy
 
 # onehot encoding
 def data_array_to_one_hot_with_shape(array,shape):
@@ -73,6 +74,33 @@ def bits_array_to_number(array):
 	array = list(map(lambda x: int(x),array[-8:]))
 	number = np.packbits(array)[0]
 	return None if number == NONE_NUMBER else number
+
+# none to number encoder
+def array_to_array_without_none(array,shape):
+	result = np.zeros((shape[0], shape[1]))
+	for i,number in enumerate(array):
+		if number is None:
+			result[i][0] = NONE_NUMBER
+		else:
+			result[i][0] = number
+	return result
+
+def array_without_none_to_array(array):
+	result = []
+	for i,number in enumerate(array):
+		if number[0] is NONE_NUMBER:
+			result.append(None)
+		else:
+			result.append(int(number[0]))
+	return result
+
+def number_to_number_without_none(number,array_size):
+	return [number] if number is not None else [NONE_NUMBER]
+
+def number_without_none_to_number(number):
+	number = int(number[0])
+	return number if number is not NONE_NUMBER else None
+
 
 # env vraiables and settings
 is_debug_mode_result = None
