@@ -70,9 +70,7 @@ class TKGame(Game):
         print "warning: draw should never happend"
         print board
         print player
-        print b.is_win(player, player)
-        print b.is_win(-player, player)
-        print b.has_legal_moves()
+        print b.get_players_scores()
         print b.get_legal_moves(1)
         print b.get_legal_moves(-1)
 

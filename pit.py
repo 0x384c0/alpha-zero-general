@@ -24,7 +24,7 @@ g = TKGame()
 # all players
 rp = RandomPlayer(g).play
 hp = HumanTKPlayer(g).play
-heurp = HeuristicPlayer(g).play
+heurp = HeuristicPlayer().play
 
 # nnet players
 n1 = NNet(g)
@@ -50,9 +50,9 @@ oppenentOfNN = hp if isPlayWithHuman else rp
 
 arena = Arena.Arena(heurp, oppenentOfNN, g, display=display)
 arena.descriptions = descriptions
-result = arena.playGames(40, verbose=True)
+result = arena.playGames(100, verbose=True)
 print("------------------")
-print("oneWon (neural network):	" + green(result[0]))
+print("oneWon ("+ descriptions[heurp] +"):	" + green(result[0]))
 print("twoWon:					" + red(result[1]))
 print("draw:					" + str(result[2]))
 print("------------------")

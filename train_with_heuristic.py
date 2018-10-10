@@ -2,6 +2,7 @@ import random
 import copy
 import numpy as np
 
+from tk.TKPlayers import HeuristicPlayer
 from tk.TKGame import TKGame as Game
 from tk.TKGame import Board, WIN_SCORE
 from tk.keras.NNet import NNetWrapper as nn
@@ -37,6 +38,7 @@ def generate_train_batch(num_steps):
 
 	board = Board()
 	game = Game()
+	heuristicPlayer = HeuristicPlayer()
 
 	player = 1
 
@@ -46,33 +48,15 @@ def generate_train_batch(num_steps):
 		progbar.add(1)
 
 		encoded_state = board.get_encoded_state()
-		validMoves = game.getValidMoves(encoded_state, player)
 
 
+		canonical_form = game.getCanonicalForm(encoded_state, player)
+		best_action = heuristicPlayer.play(canonical_form)
 
-
-		rewards = []
-		for i, action in enumerate(validMoves):
-			if action == 1:
-				next_encoded_state = game.getNextState(encoded_state, player, i)[0]
-				current_score = board.get_players_scores()[player]
-
-				next_board = Board()
-				next_board.set_encoded_state(next_encoded_state)
-				next_score = next_board.get_players_scores()[player]
-
-				reward = next_score - current_score
-
-				rewards.append(reward)
-			else:
-				rewards.append(INVALID_ACTION_REWARD) # invalid action
-
-
-		best_action = random_argmax(rewards)
 
 		game_ended = game.getGameEnded(encoded_state, player)
 
-		if rewards[best_action] != INVALID_ACTION_REWARD and game_ended == 0:
+		if game_ended == 0:
 			input_board = game.getCanonicalForm( copy.deepcopy(encoded_state), player)
 
 			encoded_state = board.execute_move(best_action, player)
@@ -89,8 +73,7 @@ def generate_train_batch(num_steps):
 
 			# print "\n"
 			# print parse_encoded_state(input_board)
-			# print "reward " + str(rewards[best_action]) + " of " + str(rewards)
-			# print outputs
+			# print "best_action " + str(best_action)
 		else:
 			player == 1
 			board = Board() # no valid actions or game ended, reset board
@@ -99,6 +82,9 @@ def generate_train_batch(num_steps):
 	return input_boards, target_pis, target_vs
 
 
+#test
+# batch = generate_train_batch(NUM_STEPS)
+# exit()
 
 
 # training
@@ -122,21 +108,3 @@ for i in range(NUM_ITERS):
 
 loss = n1.nnet.model.test_on_batch(x = input_boards, y = [target_pis, target_vs])
 print loss
-
-
-# others
-
-# state = [2, 2, 2, 2, 2, 2, 2, 2, 2, 3,		2, 3, 2, 2, 2, 2, 2, 2, 0, 0, None, None]
-# encoded_state = generate_encoded_state(state)
-
-
-# board = Board()
-# encoded_state = board.get_encoded_state()
-
-# print encoded_state
-
-# board.set_encoded_state(encoded_state)
-
-# print board.get_pieces()
-# print board.get_players_scores()
-# print board.get_players_tuz()

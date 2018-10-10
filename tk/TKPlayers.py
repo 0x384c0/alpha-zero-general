@@ -67,10 +67,6 @@ class HeuristicPlayer():
         return random.choice(max_value_ids)
 
 
-    def __init__(self, game):
-        pass
-
-
     def play(self, encoded_state):
 
         board = Board()
