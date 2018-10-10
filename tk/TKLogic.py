@@ -54,21 +54,21 @@ class Board():
 	def __getitem__(self, index): 
 		return self.get_encoded_state()[index]
 
-	def get_encoded_state(self,player=1): #TODO: canonical_board_for_opponent_must_be = board * -1
+	def get_encoded_state(self): #TODO: canonical_board_for_opponent_must_be = board * -1
 		pieces = self.__pieces
 		mid=int((len(pieces) + 1) / 2)
 
 		half_shape = (int(self.shape[0]/2),self.shape[1])
 
 		firstHalf = PIT_STATE_ENCODER(pieces[:mid],half_shape)
-		firstHalf[WIDTH - 1 + 1] = SCORE_ENCODER(self.__players_scores[1],			MAX_ARRAY_LEN_OF_ENCODED_PIT_STATE)
-		firstHalf[WIDTH - 1 + 2] = TUZ_ENCODER(self.__players_tuz[1],					MAX_ARRAY_LEN_OF_ENCODED_PIT_STATE)
+		firstHalf[WIDTH - 1 + 1] = SCORE_ENCODER(self.__players_scores[1 * self.__canonical_player],			MAX_ARRAY_LEN_OF_ENCODED_PIT_STATE)
+		firstHalf[WIDTH - 1 + 2] = TUZ_ENCODER(self.__players_tuz[1 * self.__canonical_player],					MAX_ARRAY_LEN_OF_ENCODED_PIT_STATE)
 
 		secondHalf = PIT_STATE_ENCODER(pieces[mid:],half_shape)
-		secondHalf[WIDTH - 1 + 1] = SCORE_ENCODER(self.__players_scores[-1],			MAX_ARRAY_LEN_OF_ENCODED_PIT_STATE)
-		secondHalf[WIDTH - 1 + 2] = TUZ_ENCODER(self.__players_tuz[-1],				MAX_ARRAY_LEN_OF_ENCODED_PIT_STATE)
+		secondHalf[WIDTH - 1 + 1] = SCORE_ENCODER(self.__players_scores[-1 * self.__canonical_player],			MAX_ARRAY_LEN_OF_ENCODED_PIT_STATE)
+		secondHalf[WIDTH - 1 + 2] = TUZ_ENCODER(self.__players_tuz[-1 * self.__canonical_player],				MAX_ARRAY_LEN_OF_ENCODED_PIT_STATE)
 		
-		if player * self.__canonical_player == 1:
+		if self.__canonical_player == 1:
 			secondHalf *= -1
 		else:
 			firstHalf *= -1
@@ -92,6 +92,7 @@ class Board():
 			secondSum += sum(onehot)
 
 		if firstSum > 0 or secondSum < 0: # playe 1 in firstHalf
+			self.__canonical_player = 1
 			secondHalf *= -1
 		else: #player -1 in firstHalf
 			self.__canonical_player = -1
@@ -102,25 +103,23 @@ class Board():
 
 		#first half of board
 		self.__pieces 				= PIT_STATE_DECODER(firstHalf[:HALF_BOARD_SIZE]) # pit states
-		self.__players_scores[1]	= SCORE_DECODER(firstHalf[HALF_BOARD_SIZE]) # score
-		self.__players_tuz[1]		= TUZ_DECODER(firstHalf[HALF_BOARD_SIZE + 1]) # tuz position
+		self.__players_scores[1 * self.__canonical_player]	= SCORE_DECODER(firstHalf[HALF_BOARD_SIZE]) # score
+		self.__players_tuz[1 * self.__canonical_player]		= TUZ_DECODER(firstHalf[HALF_BOARD_SIZE + 1]) # tuz position
 
 		#second half of board
 		self.__pieces 				+= PIT_STATE_DECODER(secondHalf[:HALF_BOARD_SIZE]) # pit states 
-		self.__players_scores[-1]	= SCORE_DECODER(secondHalf[HALF_BOARD_SIZE]) # score
-		self.__players_tuz[-1]		= TUZ_DECODER(secondHalf[HALF_BOARD_SIZE + 1]) # tuz position
+		self.__players_scores[-1 * self.__canonical_player]	= SCORE_DECODER(secondHalf[HALF_BOARD_SIZE]) # score
+		self.__players_tuz[-1 * self.__canonical_player]		= TUZ_DECODER(secondHalf[HALF_BOARD_SIZE + 1]) # tuz position
 
 
 
 	def get_legal_moves(self, player):
-		player = player * self.__canonical_player
 		return self.__generate_valid_moves(player)
 
 	def has_legal_moves(self):
-		return self.__generate_valid_moves(1).count(1) != 0 and self.__generate_valid_moves(-1).count(1) != 0
+		return self.get_legal_moves(1).count(1) != 0 or self.get_legal_moves(-1).count(1) != 0
 
 	def is_win(self, player,current_player):
-		player = player * self.__canonical_player
 		#Победа в игре достигается двумя способами:
 
 		#набор в свой казан 82 коргоола или более
@@ -135,7 +134,6 @@ class Board():
 		return False
 
 	def execute_move(self, move, player): # TODO: rename move to actions
-		player = player * self.__canonical_player
 		#check valid moves
 		if is_debug_mode():
 			valids = self.__generate_valid_moves(player)
@@ -227,12 +225,13 @@ class Board():
 		return self.get_encoded_state()
 
 	def __generate_valid_moves(self,player):
+		# player *= self.__canonical_player
 		possible_moves = [0] * self.action_size
 		game_state = self.__pieces
 		for i in range(0,self.action_size):
 			if (
-				player == 1 and (i < BOARD_SIZE/2) or  #playes 1 side
-				player == -1 and (i >= BOARD_SIZE/2)		#playes -1 side
+				player * self.__canonical_player == 1 and (i < BOARD_SIZE/2) or  #playes 1 side
+				player * self.__canonical_player == -1 and (i >= BOARD_SIZE/2)		#playes -1 side
 				): 
 				possible_moves[i] = 1 if game_state[i] > 0 else 0 # можно сделать ход, если лунке есть камни
 		
@@ -250,7 +249,8 @@ class Board():
 		return possible_moves
 
 	def __is_pit_dont_belongs_to_player(self,pit,player):
-		if player == 1:
+		# player *= self.__canonical_player
+		if player * self.__canonical_player == 1:
 			players_pit = list(range(0, int(self.__size / 2))) 
 		else:
 			players_pit = list(range(int(self.__size / 2), self.__size))
@@ -283,14 +283,17 @@ class Board():
 	def set_pieces(self,pieces):
 		self.__pieces = pieces
 
-	def get_pieces(self):
-		return self.__pieces
+	def get_pieces(self): # for players
+		return copy.copy(self.__pieces)
 
 	def get_players_scores(self):
-		return self.__players_scores
+		return copy.copy(self.__players_scores)
 
 	def get_players_tuz(self):
-		return self.__players_tuz
+		return copy.copy(self.__players_tuz)
+
+	def set_players_tuz(self,player,value):
+		self.__players_tuz[player] = value
 
 	def get_canonical_player(self):
 		return self.__canonical_player

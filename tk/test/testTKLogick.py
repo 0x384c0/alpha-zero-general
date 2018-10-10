@@ -148,41 +148,36 @@ class TestTKLogic(unittest.TestCase): #TODO: rename to testTKLogick
 		self.board.execute_move(0,1)
 		self.assertEqual(self.board.get_players_tuz(),		{1: None, -1: None})
 
-		self.setUp()
+		self.setUp()	
 		self.board.set_pieces([1, 1, 2, 3, 1, 1, 8, 6, 15,	1, 2, 1, 16, 3, 4, 3, 1, 5])
-		self.board.get_players_tuz()[-1] = 1
+		self.board.set_players_tuz(-1, 1)
 		self.assertEqual(self.board.get_legal_moves(-1),							[0, 1, 0, 0, 0, 0, 0, 0, 0,		1, 1, 1, 1, 1, 1, 1, 1, 1,])
-		self.board.get_players_tuz()[-1] = 0
+		self.board.set_players_tuz(-1, 0)
 		self.assertEqual(self.board.get_legal_moves(-1),							[1, 0, 0, 0, 0, 0, 0, 0, 0,		1, 1, 1, 1, 1, 1, 1, 1, 1,])
 
 
 
 	def test_encoded_state(self):
 		state = 	[9, 9, 9, 9, 1, 9, 9, 9, 9,		9, 9, 9, 9, 9, 9, 9, 9, 9,		1,16,		1,None]
-		state_rev = [9, 9, 9, 9, 9, 9, 9, 9, 9,		9, 9, 9, 9, 1, 9, 9, 9, 9,		16, 1,		None, 1]
-		self.board.set_encoded_state(generate_encoded_state(state))
-		self.assertEqual(state, parse_encoded_state(self.board.get_encoded_state()))
-		self.assertEqual(state_rev, parse_encoded_state(self.board.get_encoded_state(-1)))
-
-		self.board.set_encoded_state(generate_encoded_state(state))
-		canonical_board_for_player = self.board.get_encoded_state()
-		canonical_board_for_other_player = self.board.get_encoded_state(-1)
-		self.assertEqual(str(self.board.get_encoded_state()),str(self.board.get_encoded_state(-1) * -1))
-		self.board.set_encoded_state(canonical_board_for_other_player)
-		self.assertEqual(parse_encoded_state( canonical_board_for_player),parse_encoded_state(self.board.get_encoded_state(-1)))
-
-		state_enc = generate_encoded_state(state)
-		state_enc_str_1 = str(state_enc)
-
-		self.board.set_encoded_state(state_enc)
-		state_enc_str_2 = str(state_enc)
-		state1 = parse_encoded_state(self.board.get_encoded_state())
 		
-		self.board.set_encoded_state(state_enc)
-		state2 = parse_encoded_state(self.board.get_encoded_state())
-
-		self.assertEqual(state_enc_str_1,state_enc_str_2)
+		state1 = generate_encoded_state(state)
+		self.board.set_encoded_state(state1)
+		state2 = self.board.get_encoded_state()
+		state1 = str(state1)
+		state2 = str(state2)
 		self.assertEqual(state1,state2)
+
+		# canonical -1
+		self.setUp()
+		state1 = generate_encoded_state(state) * -1
+		self.board.set_encoded_state(state1)
+		state2 = self.board.get_encoded_state()
+		state1 = str(state1)
+		state2 = str(state2)
+		self.assertEqual(state1,state2)
+
+
+
 
 	def testDisplay(self):
 

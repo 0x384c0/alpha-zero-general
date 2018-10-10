@@ -54,7 +54,7 @@ class HeuristicPlayer():
 
     INVALID_ACTION_REWARD = -1
     def random_argmax(self, array):
-        MAX_DIFF = 2
+        MAX_DIFF = 1
         arg_max = np.argmax(array)
         max_value = array[arg_max]
 
@@ -68,43 +68,41 @@ class HeuristicPlayer():
 
 
     def __init__(self, game):
-        self.game = game
+        pass
 
 
     def play(self, encoded_state):
-        print "encoded_state"
-        print encoded_state
+
         board = Board()
         board.set_encoded_state(encoded_state)
-        player = board.get_canonical_player()
-        validMoves = self.game.getValidMoves(encoded_state, player)
-
-
-        print "validMoves"
-        print validMoves
-        print "player"
-        print player 
+        player = 1
+        validMoves = board.get_legal_moves(player)
+        current_score = board.get_players_scores()[player]
 
         rewards = []
         for action, valid in enumerate(validMoves):
             if valid == 1:
-                next_encoded_state = self.game.getNextState(encoded_state, player, action)[0]
-                current_score = board.get_players_scores()[player]
-
                 next_board = Board()
-                next_board.set_encoded_state(next_encoded_state)
+                next_board.set_encoded_state(encoded_state)
+                next_board.execute_move(action, player)
                 next_score = next_board.get_players_scores()[player]
 
                 reward = next_score - current_score
-
                 rewards.append(reward)
             else:
                 rewards.append(self.INVALID_ACTION_REWARD) # invalid action
 
-        print "rewards"
-        print rewards
+        validRewards = map(lambda x: x if x != -1 else 0,rewards)
 
-        return self.random_argmax(rewards)
+        if sum(validRewards) == 0:
+            validPieces = board.get_pieces()
+            for action,valid in enumerate(validMoves):
+                if valid == 0:
+                    validPieces[action] = 0
+            return np.argmax(validPieces)
+        else:
+            action = self.random_argmax(rewards)
+            return action
 
 
 def int_to_bool_string(int):

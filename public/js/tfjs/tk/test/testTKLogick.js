@@ -126,17 +126,8 @@ class TestTKLogic{
 
 	test_encoded_state(){
 		let state = 	[9, 9, 9, 9, 1, 9, 9, 9, 9,		9, 9, 9, 9, 9, 9, 9, 9, 9,		1,16,		1,null]
-		let state_rev = [9, 9, 9, 9, 9, 9, 9, 9, 9,		9, 9, 9, 9, 1, 9, 9, 9, 9,		16, 1,		null, 1]
 		this.board.set_encoded_state(generate_encoded_state(state))
 		this.assertEqual(state, parse_encoded_state(this.board.get_encoded_state()))
-		this.assertEqual(state_rev, parse_encoded_state(this.board.get_encoded_state(-1)))
-
-		this.board.set_encoded_state(generate_encoded_state(state))
-		let canonical_board_for_player = this.board.get_encoded_state()
-		let canonical_board_for_other_player = this.board.get_encoded_state(-1)
-		this.assertEqual(this.board.get_encoded_state(), operationWith2DArray( this.board.get_encoded_state(-1), -1, "*"))
-		this.board.set_encoded_state(canonical_board_for_other_player)
-		this.assertEqual(parse_encoded_state( canonical_board_for_player),parse_encoded_state(this.board.get_encoded_state(-1)))
 
 		let state_enc = generate_encoded_state(state)
 		let state_enc_str_1 = state_enc
