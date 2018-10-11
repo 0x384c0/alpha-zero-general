@@ -88,31 +88,36 @@ function zeros2D(w,h){
 }
 
 
-function array_to_bits_batch_with_shape(array,shape){
-	let token_ids_bits = zeros2D(shape[0], shape[1])
-	for (const [i, number] of array.entries()){
-		let bits_array = number_to_bits_array(number,shape[1])
-		for (const [j,bit] of bits_array.entries()){
-			token_ids_bits[i][j] = bit
-		}
-	}
-	return token_ids_bits
-}
-function bits_batch_to_array(batch){
-	let array = []
-	for (let bits of batch)
-		array.push(bits_array_to_number(bits))
-	return array
-}
+
+// none to number encoder
 const NONE_NUMBER = 255
-function number_to_bits_array(i_number,array_size){
-    const number = i_number == null ? NONE_NUMBER : i_number
-    const strBits = number.toString(2)
-    const arrBits = Array.from(strBits).map((x) => {return parseInt(x)})
-    return Array(array_size - arrBits.length).fill(0).concat(arrBits)
+function array_to_array_without_none(array,shape){
+	result = zeros2D(shape[0], shape[1])
+	for (const [i, number] of array.entries()){
+		if (number == null)
+			result[i][0] = NONE_NUMBER
+		else
+			result[i][0] = number
+	}
+	return result
 }
-function bits_array_to_number(i_array){
-    let array = i_array.join("")
-    let number = parseInt(array,2)
-    return number == NONE_NUMBER ? null : number
+
+function array_without_none_to_array(array){
+	result = []
+	for (const [i, number] of array.entries()){
+		if (number[0] == NONE_NUMBER)
+			result.push(null)
+		else
+			result.push(int(number[0]))
+	}
+	return result
+}
+
+function number_to_number_without_none(number,array_size){
+	return number != null ? [number] : [NONE_NUMBER]
+}
+
+function number_without_none_to_number(number){
+	number = int(number[0])
+	return number != NONE_NUMBER ? number : null
 }

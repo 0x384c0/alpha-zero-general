@@ -14,7 +14,7 @@ class TestTKLogic{
 			this.test_tuz,
 			this.test_encoded_state,
 			this.testCanonicalForm,
-			this.testNNOutputs
+			// this.testNNOutputs
 		]
 		for (let test of tests){
 			console.log("%c testing " + test.name, 'color: green; font-weight: bold;')

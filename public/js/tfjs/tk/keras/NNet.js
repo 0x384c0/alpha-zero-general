@@ -27,7 +27,7 @@ class NNet{
 		return tf.tidy(() => {
 			const xs = tf.tensor3d(
 				[canonicalBoard],
-				[1, 22, 8]
+				[1, 22, MAX_ARRAY_LEN_OF_ENCODED_PIT_STATE]
 			)
 
 			const prediction = _model.predict(xs)
