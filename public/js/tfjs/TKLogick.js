@@ -42,7 +42,7 @@ class Board{
 		this.__canonical_player = 1
 	}
 
-	get_encoded_state(player = 1){
+	get_encoded_state(){
 		let pieces = this.__pieces
 		let mid = int(pieces.length / 2)
 		let half_shape = [int(this.shape[0]/2), this.shape[1]]
@@ -53,14 +53,14 @@ class Board{
 		// print(PIT_STATE_ENCODER(pieces.slice(0,mid),half_shape))
 
 		let firstHalf = PIT_STATE_ENCODER(pieces.slice(0,mid),half_shape)
-		firstHalf[WIDTH - 1 + 1] = SCORE_ENCODER(this.__players_scores[1],			MAX_ARRAY_LEN_OF_ENCODED_PIT_STATE)
-		firstHalf[WIDTH - 1 + 2] = TUZ_ENCODER(this.__players_tuz[1],					MAX_ARRAY_LEN_OF_ENCODED_PIT_STATE)
+		firstHalf[WIDTH - 1 + 1] = SCORE_ENCODER(this.__players_scores[1 * this.__canonical_player],			MAX_ARRAY_LEN_OF_ENCODED_PIT_STATE)
+		firstHalf[WIDTH - 1 + 2] = TUZ_ENCODER(this.__players_tuz[1 * this.__canonical_player],					MAX_ARRAY_LEN_OF_ENCODED_PIT_STATE)
 
 		let secondHalf = PIT_STATE_ENCODER(pieces.slice(-mid),half_shape)
-		secondHalf[WIDTH - 1 + 1] = SCORE_ENCODER(this.__players_scores[-1],			MAX_ARRAY_LEN_OF_ENCODED_PIT_STATE)
-		secondHalf[WIDTH - 1 + 2] = TUZ_ENCODER(this.__players_tuz[-1],				MAX_ARRAY_LEN_OF_ENCODED_PIT_STATE)
+		secondHalf[WIDTH - 1 + 1] = SCORE_ENCODER(this.__players_scores[-1 * this.__canonical_player],			MAX_ARRAY_LEN_OF_ENCODED_PIT_STATE)
+		secondHalf[WIDTH - 1 + 2] = TUZ_ENCODER(this.__players_tuz[-1 * this.__canonical_player],				MAX_ARRAY_LEN_OF_ENCODED_PIT_STATE)
 		
-		if (player * this.__canonical_player == 1)
+		if (this.__canonical_player == 1)
 			secondHalf = operationWith2DArray(secondHalf, -1, "*")
 		else
 			firstHalf = operationWith2DArray(firstHalf, -1, "*")
@@ -87,6 +87,7 @@ class Board{
 		}
 
 		if (firstSum > 0 || secondSum < 0) {//  playe 1 in firstHalf
+			this.__canonical_player = 1
 			secondHalf = operationWith2DArray(secondHalf, -1, "*")
 		} else {// player -1 in firstHalf
 			this.__canonical_player = -1
@@ -97,38 +98,35 @@ class Board{
 
 		// first half of board
 		this.__pieces 				= PIT_STATE_DECODER(firstHalf.slice(0,HALF_BOARD_SIZE)) //  pit states
-		this.__players_scores[1]	= SCORE_DECODER(firstHalf[HALF_BOARD_SIZE]) //  score
-		this.__players_tuz[1]		= TUZ_DECODER(firstHalf[HALF_BOARD_SIZE + 1]) //  tuz position
+		this.__players_scores[1 * this.__canonical_player]	= SCORE_DECODER(firstHalf[HALF_BOARD_SIZE]) //  score
+		this.__players_tuz[1 * this.__canonical_player]		= TUZ_DECODER(firstHalf[HALF_BOARD_SIZE + 1]) //  tuz position
 		// second half of board
 		this.__pieces = this.__pieces.concat(PIT_STATE_DECODER(secondHalf.slice(0,HALF_BOARD_SIZE))) //  pit states 
-		this.__players_scores[-1]	= SCORE_DECODER(secondHalf[HALF_BOARD_SIZE]) //  score
-		this.__players_tuz[-1]		= TUZ_DECODER(secondHalf[HALF_BOARD_SIZE + 1]) //  tuz position
+		this.__players_scores[-1 * this.__canonical_player]	= SCORE_DECODER(secondHalf[HALF_BOARD_SIZE]) //  score
+		this.__players_tuz[-1 * this.__canonical_player]		= TUZ_DECODER(secondHalf[HALF_BOARD_SIZE + 1]) //  tuz position
 
 	}
-	get_legal_moves(i_player){
-		let player = i_player * this.__canonical_player
+	get_legal_moves(player){
 		return this.__generate_valid_moves(player)
 	}
 	has_legal_moves(){
-		return count(this.__generate_valid_moves(1),1) != 0 && count(this.__generate_valid_moves(-1),1) != 0
+		return count(this.get_legal_moves(1),1) != 0 || count(this.get_legal_moves(-1),1) != 0
 	}
-	is_win( i_player,current_player){
-		let player = i_player * this.__canonical_player
+	is_win( player){
 		// Победа в игре достигается двумя способами:
 
 		// набор в свой казан 82 коргоола или более
 		if (this.__players_scores[player] >= WIN_SCORE && this.__players_scores[-player] < WIN_SCORE)
 			return true
 
-		if (current_player == player) // ат сыроо (если после моего хода у противника не осталось ходов)
-			// у противника не осталось ходов (см. ниже «ат сыроо») и при этом он ещё не набрал 81 коргоол
-			if ( count(this.__generate_valid_moves(-player),1) == 0 && this.__players_scores[-player] < WIN_SCORE )
-				return true
+		// ат сыроо (если после моего хода у противника не осталось ходов)
+		// у противника не осталось ходов (см. ниже «ат сыроо») и при этом он ещё не набрал 81 коргоол
+		if ( count(this.__generate_valid_moves(-player),1) == 0 && this.__players_scores[-player] < WIN_SCORE )
+			return true
 
 		return false
 	}
-	execute_move( move, i_player){
-		let player = i_player * this.__canonical_player
+	execute_move( move, player){
 		let game_state = copy(this.__pieces)
 		let balls_in_first_pit = game_state[move]
 		let last_pit = move + balls_in_first_pit
@@ -204,8 +202,8 @@ class Board{
 		let possible_moves = Array(this.action_size).fill(0)
 		let game_state = this.__pieces
 		for (let i of range(0,this.action_size)){
-			if (player == 1 && (i < BOARD_SIZE/2) ||  // playes 1 side
-				player == -1 && (i >= BOARD_SIZE/2))		// playes -1 side
+			if ((player * this.__canonical_player) == 1 && (i < BOARD_SIZE/2) ||  // playes 1 side
+				(player * this.__canonical_player) == -1 && (i >= BOARD_SIZE/2))		// playes -1 side
 				possible_moves[i] = game_state[i] > 0 ? 1 : 0 //  можно сделать ход, если лунке есть камни
 		}
 		
@@ -219,7 +217,7 @@ class Board{
 	}
 	__is_pit_dont_belongs_to_player(pit,player){
 		let players_pit = null
-		if (player == 1)
+		if ((player * this.__canonical_player) == 1)
 			players_pit = range(0, int(this.__size / 2))
 		else
 			players_pit = range(int(this.__size / 2), this.__size)
@@ -234,19 +232,22 @@ class Board{
 //for tests
 
 	set_pieces(pieces){
-		this.__pieces = pieces
+		this.__pieces = copy(pieces)
 	}
 
 	get_pieces(){
-		return this.__pieces
+		return copy(this.__pieces)
 	}
 
 	get_players_scores(){
-		return this.__players_scores
+		return copy(this.__players_scores)
 	}
 
 	get_players_tuz(){
-		return this.__players_tuz
+		return copy(this.__players_tuz)
+	}
+	set_players_tuz(player,value){
+		this.__players_tuz[player] = value
 	}
 }
 

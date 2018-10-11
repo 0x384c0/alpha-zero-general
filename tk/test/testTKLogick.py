@@ -88,7 +88,6 @@ class TestTKLogic(unittest.TestCase): #TODO: rename to testTKLogick
 		self.board.set_pieces([9, 9, 9, 9, 9, 9, 5, 9, 9,		9, 2, 9, 9, 9, 9, 9, 9, 9])
 		self.board.execute_move(6,1)
 		self.board.execute_move(7,1)
-
 		self.assertEqual(self.board.get_legal_moves(1), 	[1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0])
 
 	def test_has_legal_moves(self):

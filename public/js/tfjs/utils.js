@@ -25,6 +25,9 @@ function isNumeric(n) {
 function int(n){
 	return Math.floor(n)
 }
+function str(o){
+	return JSON.stringify(o)
+}
 
 function concatenate(arr1,arr2){
 	return arr1.concat(arr2)

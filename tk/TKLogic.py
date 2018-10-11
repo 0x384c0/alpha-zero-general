@@ -249,8 +249,7 @@ class Board():
 		return possible_moves
 
 	def __is_pit_dont_belongs_to_player(self,pit,player):
-		# player *= self.__canonical_player
-		if player * self.__canonical_player == 1:
+		if (player * self.__canonical_player) == 1:
 			players_pit = list(range(0, int(self.__size / 2))) 
 		else:
 			players_pit = list(range(int(self.__size / 2), self.__size))
