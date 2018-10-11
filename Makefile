@@ -54,10 +54,20 @@ play_with_himan:
 	$(PYTHON) pit.py
 
 #TensorFlow.js
-keras_model_to_tfjs:
+generate_tfjs_model_from_keras:
 	rm -rf temp/tfjs/
 	python keras_model_to_tfjs.py
 	tensorflowjs_converter --input_format keras "temp/best.h5" temp/tfjs
+
+generate_static_tfjs_site:
+	if [ ! -d "temp/tfjs" ]; then echo "first run \"make generate_tfjs_model_from_keras\""; exit 1; fi;
+	rm -rf temp/public
+	cp -r public temp/
+	rm temp/public/js/apiRest.js
+	mv temp/public/js/apiTfjs.js temp/public/js/api.js
+	cp -r temp/tfjs temp/public
+	mv temp/public/tfjs temp/public/model
+	echo "temp/public is ready for hosting"
 
 start_server_tfjs:
 	$(PYTHON)  server_tfjs.py
