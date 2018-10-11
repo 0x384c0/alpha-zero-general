@@ -42,7 +42,7 @@ def generate_train_batch(num_steps):
 
 	player = 1
 
-	print "generate_train_batch"
+	print("generate_train_batch")
 	progbar = Progbar(num_steps)
 	for x in range(num_steps):
 		progbar.add(1)
@@ -71,9 +71,9 @@ def generate_train_batch(num_steps):
 			target_pis.append(action_onehot)
 			target_vs.append(win_probability)
 
-			# print "\n"
-			# print parse_encoded_state(input_board)
-			# print "best_action " + str(best_action)
+			# print("\n")
+			# print(parse_encoded_state(input_board))
+			# print("best_action " + str(best_action))
 		else:
 			player == 1
 			board = Board() # no valid actions or game ended, reset board
@@ -95,7 +95,7 @@ n1.load_checkpoint('temp',"best.pth.tar")
 n1.nnet.model._make_predict_function()
 
 for i in range(NUM_ITERS):
-	print "iteration " + str(i) + " / " + str(NUM_ITERS)
+	print("iteration " + str(i) + " / " + str(NUM_ITERS))
 	input_boards, target_pis, target_vs = generate_train_batch(NUM_STEPS)
 	input_boards = np.asarray(input_boards)
 	target_pis = np.asarray(target_pis)
@@ -107,4 +107,4 @@ for i in range(NUM_ITERS):
 		n1.save_checkpoint('temp',"best.pth.tar")
 
 loss = n1.nnet.model.test_on_batch(x = input_boards, y = [target_pis, target_vs])
-print loss
+print(loss)

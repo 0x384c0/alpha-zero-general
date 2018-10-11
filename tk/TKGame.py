@@ -67,12 +67,12 @@ class TKGame(Game):
             return 0
         # draw has a very little value 
         # debug_print("1e-4")
-        print "warning: draw should never happend"
-        print board
-        print player
-        print b.get_players_scores()
-        print b.get_legal_moves(1)
-        print b.get_legal_moves(-1)
+        print("warning: draw should never happend")
+        print(board)
+        print(player)
+        print(b.get_players_scores())
+        print(b.get_legal_moves(1))
+        print(b.get_legal_moves(-1))
 
         return 1e-4
 

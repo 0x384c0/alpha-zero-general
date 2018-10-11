@@ -119,11 +119,11 @@ def display(board):
 
     print("   ", end="")
     for y in range(n):
-        print (y,"", end="")
+        print(y,"", end="")
     print("")
     print("  ", end="")
     for _ in range(n):
-        print ("-", end="-")
+        print("-", end="-")
     print("--")
     for y in range(n):
         print(y, "|",end="")    # print the row #
@@ -140,5 +140,5 @@ def display(board):
 
     print("  ", end="")
     for _ in range(n):
-        print ("-", end="-")
+        print("-", end="-")
     print("--")

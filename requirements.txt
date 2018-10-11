@@ -6,14 +6,14 @@
 # https://developer.nvidia.com/cudnn
 # Note that if you want to use the GPU version, you have to `pip uninstall tensorflow`
 # and `pip install tensorflow-gpu`, since both cannot coexist. 
-tensorflow>=1.0.1
+tensorflow==1.10.1
 
 # Neural net and related libraries.
-keras==2.0.5
+keras==2.2.2
+
+# TensorFlow.js
+tensorflowjs==0.6.1
 
 # api
 flask==1.0.2
 flask-cors==3.0.6
-
-# TensorFlow.js
-tensorflowjs==0.6.1

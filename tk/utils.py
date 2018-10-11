@@ -65,7 +65,7 @@ def bits_batch_to_array(batch):
 
 NONE_NUMBER = 255
 def number_to_bits_array(number,array_size):
-	number = NONE_NUMBER if number == None else number
+	number = NONE_NUMBER if number is None else number
 	a =	np.array(np.uint8(number), dtype=np.uint8)
 	b = np.unpackbits(a)
 	return np.concatenate((np.zeros(array_size - len(b)) ,b)).tolist()
@@ -88,7 +88,7 @@ def array_to_array_without_none(array,shape):
 def array_without_none_to_array(array):
 	result = []
 	for i,number in enumerate(array):
-		if number[0] is NONE_NUMBER:
+		if number[0] == NONE_NUMBER:
 			result.append(None)
 		else:
 			result.append(int(number[0]))
@@ -99,7 +99,7 @@ def number_to_number_without_none(number,array_size):
 
 def number_without_none_to_number(number):
 	number = int(number[0])
-	return number if number is not NONE_NUMBER else None
+	return number if number != NONE_NUMBER else None
 
 
 # env vraiables and settings

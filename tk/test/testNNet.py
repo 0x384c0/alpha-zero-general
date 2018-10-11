@@ -60,12 +60,12 @@ class TestNNet(unittest.TestCase): #TODO: rename to testTKLogick
 
 		action = np.argmax(prediction[0])
 
-		# print "canonical_form\n" + str(canonical_form)
-		# print "Predicted action: " + str(action) + " It should be 16"
-		# print len(self.n1.nnet.model.get_weights())
-		# print prediction[1]
+		# print("canonical_form\n" + str(canonical_form))
+		# print("Predicted action: " + str(action) + " It should be 16")
+		# print(len(self.n1.nnet.model.get_weights()))
+		# print(prediction[1])
 		# for weight in self.n1.nnet.model.get_weights():
-		# 	print weight
+		# 	print(weight)
 
 		self.assertEqual(action,16)
 
