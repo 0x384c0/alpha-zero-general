@@ -7,6 +7,8 @@ import time, os, sys
 from pickle import Pickler, Unpickler
 from random import shuffle
 
+from utils import max_num_of_steps, step_overflow_penalty
+
 
 class Coach():
     """
@@ -57,6 +59,9 @@ class Coach():
             board, self.curPlayer = self.game.getNextState(board, self.curPlayer, action)
 
             r = self.game.getGameEnded(board, self.curPlayer)
+
+            if episodeStep > max_num_of_steps():
+                r = step_overflow_penalty()
 
             if r!=0:
                 return [(x[0],x[2],r*((-1)**(x[1]!=self.curPlayer))) for x in trainExamples]
@@ -129,7 +134,13 @@ class Coach():
             else:
                 print('ACCEPTING NEW MODEL')
                 self.nnet.save_checkpoint(folder=self.args.checkpoint, filename=self.getCheckpointFile(i))
-                self.nnet.save_checkpoint(folder=self.args.checkpoint, filename='best.pth.tar')                
+                self.nnet.save_checkpoint(folder=self.args.checkpoint, filename='best.pth.tar')
+            if self.mcts.recursion_errors != 0:
+                print("self.mcts.recursion_errors " + str(self.mcts.recursion_errors))
+                self.mcts.recursion_errors = 0
+            if self.mcts.tree_depth_overflow_errors != 0:
+                print("self.mcts.tree_depth_overflow_errors " + str(self.mcts.tree_depth_overflow_errors))
+                self.mcts.tree_depth_overflow_errors = 0         
 
     def getCheckpointFile(self, iteration):
         return 'checkpoint_' + str(iteration) + '.pth.tar'

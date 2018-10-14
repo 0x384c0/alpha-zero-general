@@ -91,7 +91,8 @@ class TKGame(Game):
 
     def stringRepresentation(self, board):
         # debug_print(board.tostring())
-        return str(board.tostring())
+        return str(' '.join(map(str,board)).replace('.', '').replace('[', '').replace(']', ''))
+        # return str(board)
 
 
 def display(board_state):

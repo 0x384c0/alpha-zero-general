@@ -56,3 +56,7 @@ print("oneWon ("+ descriptions[n1p] +"):	" + green(result[0]))
 print("twoWon:					" + red(result[1]))
 print("draw:					" + str(result[2]))
 print("------------------")
+if mcts1.recursion_errors != 0:
+	print("mcts1.recursion_errors " + str(mcts1.recursion_errors))
+if mcts1.tree_depth_overflow_errors != 0:
+	print("mcts1.tree_depth_overflow_errors " + str(mcts1.tree_depth_overflow_errors))

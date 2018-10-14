@@ -121,6 +121,13 @@ def num_MCTS_sims():
 	stringNum = os.getenv('NUMBER_OF_MCTS_SIMULATIONS', "50")
 	return int(stringNum)
 
+# stop too long games
+def max_num_of_steps():
+	return 300
+
+def step_overflow_penalty():
+	return -1e-4
+
 # string coloring
 def red(obj):
 	return "\033[31m"+ str(obj) + "\033[0m"

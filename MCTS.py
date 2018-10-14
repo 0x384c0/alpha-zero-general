@@ -2,6 +2,11 @@ import math
 import numpy as np
 EPS = 1e-8
 
+from utils import max_num_of_steps, step_overflow_penalty
+
+MAX_TREE_DEPTH = max_num_of_steps()
+MAX_TREE_DEPTH_OVERFLOW_PENALTY = step_overflow_penalty()
+
 class MCTS():
     """
     This class handles the MCTS tree.
@@ -19,6 +24,11 @@ class MCTS():
         self.Es = {}        # stores game.getGameEnded ended for board s
         self.Vs = {}        # stores game.getValidMoves for board s
 
+        self.tree_depth = 0
+
+        self.recursion_errors = 0
+        self.tree_depth_overflow_errors = 0
+
     def getActionProb(self, canonicalBoard, temp=1):
         """
         This function performs numMCTSSims simulations of MCTS starting from
@@ -29,6 +39,7 @@ class MCTS():
                    proportional to Nsa[(s,a)]**(1./temp)
         """
         for i in range(self.args.numMCTSSims):
+            self.tree_depth = 0
             self.search(canonicalBoard)
 
         s = self.game.stringRepresentation(canonicalBoard)
@@ -73,6 +84,11 @@ class MCTS():
 
         if s not in self.Es:
             self.Es[s] = self.game.getGameEnded(canonicalBoard, 1)
+        elif self.tree_depth > MAX_TREE_DEPTH:
+            print("\nMCTS self.tree_depth > MAX_TREE_DEPTH")
+            self.tree_depth_overflow_errors += 1
+            self.Es[s] = MAX_TREE_DEPTH_OVERFLOW_PENALTY
+
         if self.Es[s]!=0:
             # terminal node
             return -self.Es[s]
@@ -118,7 +134,14 @@ class MCTS():
         next_s, next_player = self.game.getNextState(canonicalBoard, 1, a)
         next_s = self.game.getCanonicalForm(next_s, next_player)
 
-        v = self.search(next_s)
+        try:
+            self.tree_depth += 1
+            v = self.search(next_s)
+        except RecursionError:
+            print("\nRecursionError")
+            self.recursion_errors += 1
+            v = MAX_TREE_DEPTH_OVERFLOW_PENALTY
+
 
         if (s,a) in self.Qsa:
             self.Qsa[(s,a)] = (self.Nsa[(s,a)]*self.Qsa[(s,a)] + v)/(self.Nsa[(s,a)]+1)
