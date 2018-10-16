@@ -4,11 +4,11 @@ const NUMBER_OF_MCTS_SIMULATIONS = 100
 function setupApi() {
 	console.log("Importing dependencies ...")
 	return importFromUrl("https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@0.13.0")
-	.then(() => {return importFromUrl("/js/tfjs/utils.js")})
-	.then(() => {return importFromUrl("/js/tfjs/MCTS.js")})
-	.then(() => {return importFromUrl("/js/tfjs/tk/keras/NNet.js")})
-	.then(() => {return importFromUrl("/js/tfjs/TKLogick.js")})
-	.then(() => {return importFromUrl("/js/tfjs/TKGame.js")})
+	.then(() => {return importFromUrl("js/tfjs/utils.js")})
+	.then(() => {return importFromUrl("js/tfjs/MCTS.js")})
+	.then(() => {return importFromUrl("js/tfjs/tk/keras/NNet.js")})
+	.then(() => {return importFromUrl("js/tfjs/TKLogick.js")})
+	.then(() => {return importFromUrl("js/tfjs/TKGame.js")})
 	.then(() => {
 		console.log("Dependencies imported")
 		return new NNet().load()

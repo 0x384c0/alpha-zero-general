@@ -6,7 +6,7 @@ class NNet{
 			_loading = true
 			console.log("Loading model ... ")
 			return  tf
-			.loadModel('/model/model.json')
+			.loadModel('model/model.json')
 			.then((i_model)=>{
 				_model = i_model
 				_loading = false
