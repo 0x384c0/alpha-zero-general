@@ -80,14 +80,14 @@ class Arena():
             board, curPlayer = self.game.getNextState(board, curPlayer, action)
         
         if it > max_num_of_steps():
-            assert(self.display)
-            self.display(board)
+            if self.display != None:
+                self.display(board)
             print("WARNING: Game over with step overflow: Turn " + str(it) + " Result " + str(self.game.getGameEnded(board, 1)) + "\n------------------------------\n")
             return step_overflow_penalty()
 
         if verbose:
-            assert(self.display)
-            self.display(board)
+            if self.display != None:
+                self.display(board)
             print("Game over: Turn " + str(it) + " Result " + str(self.game.getGameEnded(board, 1)) + "\n------------------------------\n")
         return self.game.getGameEnded(board, 1)
 

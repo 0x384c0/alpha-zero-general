@@ -123,7 +123,7 @@ def num_MCTS_sims():
 
 # stop too long games
 def max_num_of_steps():
-	return 300
+	return 400
 
 def step_overflow_penalty():
 	return -1e-4
